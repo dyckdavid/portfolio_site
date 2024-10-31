@@ -24,8 +24,8 @@
 	<meta name="description" content="David's Portfolio site" />
 </svelte:head>
 
-<section class="bg-gray-100 dark:bg-gray-800 py-10">
-	<h1 class="text-4xl font-bold text-center text-gray-800 dark:text-white">Projects</h1>
+<section class=" py-10">
+	<h1 class="text-4xl font-bold text-center ">Projects</h1>
 	<div class="max-w-4xl mx-auto mt-8 space-y-6 px-4">
 		{#each projects as project}
 			<div class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md transition duration-300 hover:shadow-lg">

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores'; // Use SvelteKit's $page store
   import { onMount } from 'svelte';
+  import { IconMoon, IconSun } from '@tabler/icons-svelte';
 
   // Function to normalize paths
   function normalizePath(path: string): string {
@@ -16,9 +17,9 @@
   $: console.log('Current Path:', currentPath);
   $: console.log('isActiveHome:', isActiveHome, 'isActiveProjects:', isActiveProjects);
 
-  // Existing variables and functions
   let isOpen = false;
   let isProfileOpen = false;
+  let isDarkMode = true; // Default to dark mode
 
   function toggleMenu() {
     isOpen = !isOpen;
@@ -28,8 +29,20 @@
     isProfileOpen = !isProfileOpen;
   }
 
-  // Close the profile menu when clicking outside
+  // Toggle theme and save preference in localStorage
+  function toggleTheme() {
+    isDarkMode = !isDarkMode;
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }
+
+  // On mount, check for a saved theme preference
   onMount(() => {
+    const savedTheme = localStorage.getItem('theme');
+    isDarkMode = savedTheme === 'dark' || !savedTheme;
+    document.documentElement.classList.toggle('dark', isDarkMode);
+
+    // Close the profile menu when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (isProfileOpen && target && !target.closest('#user-menu-button')) {
@@ -129,6 +142,19 @@
             </a>
           </div>
         </div>
+      </div>
+
+      <!-- Dark Mode Toggle Icon -->
+      <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+        <button on:click={toggleTheme} class="text-gray-400 hover:text-white p-1">
+          {#if isDarkMode}
+            <!-- Moon icon for dark mode -->
+            <IconMoon stroke={2} />
+          {:else}
+            <!-- Sun icon for light mode -->
+            <IconSun stroke={2} />
+          {/if}
+        </button>
       </div>
     </div>
   </div>
