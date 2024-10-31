@@ -2,6 +2,7 @@
   import { page } from '$app/stores'; // Use SvelteKit's $page store
   import { onMount } from 'svelte';
   import { IconMoon, IconSun } from '@tabler/icons-svelte';
+  import Logo from '../../../lib/images/davidslogo.jpg';
 
   // Function to normalize paths
   function normalizePath(path: string): string {
@@ -107,8 +108,8 @@
       <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
         <div class="flex flex-shrink-0 items-center">
           <img
-            class="h-8 w-auto"
-            src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+            class="h-8 w-auto rounded-full"
+            src={Logo}
             alt="Your Company"
           />
         </div>
