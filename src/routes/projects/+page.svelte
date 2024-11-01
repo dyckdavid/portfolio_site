@@ -36,6 +36,7 @@
 <svelte:head>
 	<title>David's Portfolio</title>
 	<meta name="description" content="David's Portfolio site" />
+	<link rel="manifest" href="/manifest.json">
 </svelte:head>
 
 <section class="py-10">
