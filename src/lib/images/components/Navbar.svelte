@@ -2,7 +2,7 @@
   import { page } from '$app/stores'; // Use SvelteKit's $page store
   import { onMount } from 'svelte';
   import { IconMoon, IconSun } from '@tabler/icons-svelte';
-  import Logo from '../../../lib/images/davidslogo.jpg';
+  import Logo from '../../../lib/images/LOGO.png';
 
   // Function to normalize paths
   function normalizePath(path: string): string {
@@ -15,8 +15,8 @@
   $: isActiveProjects = currentPath === '/projects';
 
   // Debugging logs
-  $: console.log('Current Path:', currentPath);
-  $: console.log('isActiveHome:', isActiveHome, 'isActiveProjects:', isActiveProjects);
+  // $: console.log('Current Path:', currentPath);
+  // $: console.log('isActiveHome:', isActiveHome, 'isActiveProjects:', isActiveProjects);
 
   let isOpen = false;
   let isProfileOpen = false;
