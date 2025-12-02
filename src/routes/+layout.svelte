@@ -5,12 +5,10 @@
 	let { children } = $props();
 </script>
 
-<div class="app">
+<div class="app min-h-screen bg-hacker-black relative z-10">
 	<Navbar />
 
-	<main>
+	<main class="relative z-10">
 		{@render children()}
 	</main>
-
-	
 </div>

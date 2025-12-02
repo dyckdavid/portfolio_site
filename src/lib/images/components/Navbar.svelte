@@ -1,7 +1,5 @@
 <script lang="ts">
   import { page } from '$app/stores'; // Use SvelteKit's $page store
-  import { onMount } from 'svelte';
-  import { IconMoon, IconSun } from '@tabler/icons-svelte';
   import Logo from '../../../lib/images/LOGO.png';
 
   // Function to normalize paths
@@ -13,53 +11,21 @@
   $: currentPath = normalizePath($page.url.pathname);
   $: isActiveHome = currentPath === '/';
   $: isActiveProjects = currentPath === '/projects';
+  $: isActiveSkills = currentPath === '/skills';
+  $: isActiveContact = currentPath === '/contact';
 
   // Debugging logs
   // $: console.log('Current Path:', currentPath);
   // $: console.log('isActiveHome:', isActiveHome, 'isActiveProjects:', isActiveProjects);
 
   let isOpen = false;
-  let isProfileOpen = false;
-  let isDarkMode = true; // Default to dark mode
 
   function toggleMenu() {
     isOpen = !isOpen;
   }
-
-  function toggleProfileMenu() {
-    isProfileOpen = !isProfileOpen;
-  }
-
-  // Toggle theme and save preference in localStorage
-  function toggleTheme() {
-    isDarkMode = !isDarkMode;
-    document.documentElement.classList.toggle('dark', isDarkMode);
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-  }
-
-  // On mount, check for a saved theme preference
-  onMount(() => {
-    const savedTheme = localStorage.getItem('theme');
-    isDarkMode = savedTheme === 'dark' || !savedTheme;
-    document.documentElement.classList.toggle('dark', isDarkMode);
-
-    // Close the profile menu when clicking outside
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (isProfileOpen && target && !target.closest('#user-menu-button')) {
-        isProfileOpen = false;
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  });
 </script>
 
-<nav class="bg-gray-900">
+<nav class="bg-hacker-black border-b-2 border-hacker-green shadow-hacker">
   <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
     <div class="relative flex h-16 items-center justify-between">
       <!-- Mobile menu button -->
@@ -67,17 +33,16 @@
         <button
           on:click={toggleMenu}
           type="button"
-          class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+          class="relative inline-flex items-center justify-center p-2 text-hacker-green hover:text-hacker-green-bright focus:outline-none border border-hacker-green hover:shadow-hacker-glow transition-all"
           aria-controls="mobile-menu"
           aria-expanded={isOpen}
         >
-          <span class="absolute -inset-0.5"></span>
           <span class="sr-only">Open main menu</span>
           <svg
             class="{isOpen ? 'hidden' : 'block'} h-6 w-6"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            stroke-width="2"
             stroke="currentColor"
             aria-hidden="true"
           >
@@ -91,7 +56,7 @@
             class="{isOpen ? 'block' : 'hidden'} h-6 w-6"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            stroke-width="2"
             stroke="currentColor"
             aria-hidden="true"
           >
@@ -108,89 +73,138 @@
       <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
         <div class="flex flex-shrink-0 items-center">
           <img
-            class="h-8 w-auto rounded-full"
+            class="h-10 w-auto rounded-full border-2 border-hacker-green shadow-hacker-glow"
             src={Logo}
-            alt="Your Company"
+            alt="David's Logo"
           />
         </div>
         <div class="hidden sm:ml-6 sm:block">
-          <div class="flex space-x-4">
+          <div class="flex space-x-1">
             <!-- Home Link -->
             <a
               href="/"
-              class="rounded-md px-3 py-2 text-sm font-medium"
-              class:bg-gray-900={isActiveHome}
-              class:text-white={isActiveHome}
-              class:text-gray-300={!isActiveHome}
-              class:hover:bg-gray-700={!isActiveHome}
-              class:hover:text-white={!isActiveHome}
+              class="px-4 py-2 text-sm font-mono font-bold border border-hacker-green transition-all"
+              class:bg-hacker-green={isActiveHome}
+              class:text-hacker-black={isActiveHome}
+              class:text-hacker-green={!isActiveHome}
+              class:shadow-hacker-glow={isActiveHome}
+              class:hover:bg-hacker-green={!isActiveHome}
+              class:hover:text-hacker-black={!isActiveHome}
+              class:hover:shadow-hacker={!isActiveHome}
               aria-current={isActiveHome ? 'page' : undefined}
             >
-              Home
+              &gt; HOME
             </a>
             <!-- Projects Link -->
             <a
               href="/projects"
-              class="rounded-md px-3 py-2 text-sm font-medium"
-              class:bg-gray-900={isActiveProjects}
-              class:text-white={isActiveProjects}
-              class:text-gray-300={!isActiveProjects}
-              class:hover:bg-gray-700={!isActiveProjects}
-              class:hover:text-white={!isActiveProjects}
+              class="px-4 py-2 text-sm font-mono font-bold border border-hacker-green transition-all"
+              class:bg-hacker-green={isActiveProjects}
+              class:text-hacker-black={isActiveProjects}
+              class:text-hacker-green={!isActiveProjects}
+              class:shadow-hacker-glow={isActiveProjects}
+              class:hover:bg-hacker-green={!isActiveProjects}
+              class:hover:text-hacker-black={!isActiveProjects}
+              class:hover:shadow-hacker={!isActiveProjects}
               aria-current={isActiveProjects ? 'page' : undefined}
             >
-              Projects
+              &gt; PROJECTS
+            </a>
+            <!-- Skills Link -->
+            <a
+              href="/skills"
+              class="px-4 py-2 text-sm font-mono font-bold border border-hacker-green transition-all"
+              class:bg-hacker-green={isActiveSkills}
+              class:text-hacker-black={isActiveSkills}
+              class:text-hacker-green={!isActiveSkills}
+              class:shadow-hacker-glow={isActiveSkills}
+              class:hover:bg-hacker-green={!isActiveSkills}
+              class:hover:text-hacker-black={!isActiveSkills}
+              class:hover:shadow-hacker={!isActiveSkills}
+              aria-current={isActiveSkills ? 'page' : undefined}
+            >
+              &gt; SKILLS
+            </a>
+            <!-- Contact Link -->
+            <a
+              href="/contact"
+              class="px-4 py-2 text-sm font-mono font-bold border border-hacker-green transition-all"
+              class:bg-hacker-green={isActiveContact}
+              class:text-hacker-black={isActiveContact}
+              class:text-hacker-green={!isActiveContact}
+              class:shadow-hacker-glow={isActiveContact}
+              class:hover:bg-hacker-green={!isActiveContact}
+              class:hover:text-hacker-black={!isActiveContact}
+              class:hover:shadow-hacker={!isActiveContact}
+              aria-current={isActiveContact ? 'page' : undefined}
+            >
+              &gt; CONTACT
             </a>
           </div>
         </div>
-      </div>
-
-      <!-- Dark Mode Toggle Icon -->
-      <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-        <button on:click={toggleTheme} class="text-gray-400 hover:text-white p-1">
-          {#if isDarkMode}
-            <!-- Moon icon for dark mode -->
-            <IconMoon stroke={2} />
-          {:else}
-            <!-- Sun icon for light mode -->
-            <IconSun stroke={2} />
-          {/if}
-        </button>
       </div>
     </div>
   </div>
 
   <!-- Mobile menu -->
   {#if isOpen}
-    <div class="sm:hidden" id="mobile-menu">
+    <div class="sm:hidden border-t-2 border-hacker-green" id="mobile-menu">
       <div class="space-y-1 px-2 pb-3 pt-2">
         <!-- Home Link -->
         <a
           href="/"
-          class="block rounded-md px-3 py-2 text-base font-medium"
-          class:bg-gray-900={isActiveHome}
-          class:text-white={isActiveHome}
-          class:text-gray-300={!isActiveHome}
-          class:hover:bg-gray-700={!isActiveHome}
-          class:hover:text-white={!isActiveHome}
+          class="block px-3 py-2 text-base font-mono font-bold border border-hacker-green transition-all"
+          class:bg-hacker-green={isActiveHome}
+          class:text-hacker-black={isActiveHome}
+          class:text-hacker-green={!isActiveHome}
+          class:hover:bg-hacker-green={!isActiveHome}
+          class:hover:text-hacker-black={!isActiveHome}
           aria-current={isActiveHome ? 'page' : undefined}
           on:click={() => { isOpen = false; }}
         >
-          Home
+          &gt; HOME
         </a>
         <!-- Projects Link -->
         <a
           href="/projects"
-          class="block rounded-md px-3 py-2 text-base font-medium"
-          class:bg-gray-900={isActiveProjects}
-          class:text-white={isActiveProjects}
-          class:text-gray-300={!isActiveProjects}
-          class:hover:bg-gray-700={!isActiveProjects}
-          class:hover:text-white={!isActiveProjects}
+          class="block px-3 py-2 text-base font-mono font-bold border border-hacker-green transition-all"
+          class:bg-hacker-green={isActiveProjects}
+          class:text-hacker-black={isActiveProjects}
+          class:text-hacker-green={!isActiveProjects}
+          class:hover:bg-hacker-green={!isActiveProjects}
+          class:hover:text-hacker-black={!isActiveProjects}
           aria-current={isActiveProjects ? 'page' : undefined}
           on:click={() => { isOpen = false; }}
         >
-          Projects
+          &gt; PROJECTS
+        </a>
+        <!-- Skills Link -->
+        <a
+          href="/skills"
+          class="block px-3 py-2 text-base font-mono font-bold border border-hacker-green transition-all"
+          class:bg-hacker-green={isActiveSkills}
+          class:text-hacker-black={isActiveSkills}
+          class:text-hacker-green={!isActiveSkills}
+          class:hover:bg-hacker-green={!isActiveSkills}
+          class:hover:text-hacker-black={!isActiveSkills}
+          aria-current={isActiveSkills ? 'page' : undefined}
+          on:click={() => { isOpen = false; }}
+        >
+          &gt; SKILLS
+        </a>
+        <!-- Contact Link -->
+        <a
+          href="/contact"
+          class="block px-3 py-2 text-base font-mono font-bold border border-hacker-green transition-all"
+          class:bg-hacker-green={isActiveContact}
+          class:text-hacker-black={isActiveContact}
+          class:text-hacker-green={!isActiveContact}
+          class:hover:bg-hacker-green={!isActiveContact}
+          class:hover:text-hacker-black={!isActiveContact}
+          aria-current={isActiveContact ? 'page' : undefined}
+          on:click={() => { isOpen = false; }}
+        >
+          &gt; CONTACT
         </a>
       </div>
     </div>

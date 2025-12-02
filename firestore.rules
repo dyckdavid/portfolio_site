@@ -1,0 +1,37 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Projects collection - public read, restricted write
+    match /projects/{projectId} {
+      // Allow anyone to read projects (public portfolio)
+      allow read: if true;
+      
+      // Only allow writes from authenticated admin users
+      // For now, you can restrict this further or remove write access entirely
+      // if you're managing projects through Firebase Console
+      allow write: if false; // Disable public writes - manage projects via Firebase Console
+    }
+    
+    // Contacts collection - no public read, allow create only
+    match /contacts/{contactId} {
+      // Don't allow public reads (privacy)
+      allow read: if false;
+      
+      // Allow anyone to create a contact (submit contact form)
+      // But validate the data structure
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'message', 'timestamp'])
+                   && request.resource.data.name is string
+                   && request.resource.data.email is string
+                   && request.resource.data.message is string
+                   && request.resource.data.name.size() >= 2
+                   && request.resource.data.message.size() >= 10
+                   && request.resource.data.email.matches('.*@.*\\..*');
+      
+      // Don't allow updates or deletes from public
+      allow update, delete: if false;
+    }
+  }
+}
+

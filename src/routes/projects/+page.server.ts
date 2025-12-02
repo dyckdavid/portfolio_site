@@ -37,7 +37,7 @@ export const load: PageServerLoad = async () => {
             return dateB - dateA;
         });
 
-        console.log("Fetched projects:", projects); // Debugging log
+        // console.log("Fetched projects:", projects); // Debugging log
 
         // Return the fetched projects
         return { projects };
