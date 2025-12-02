@@ -118,13 +118,14 @@
 				</div>
 			</a>
 
-			<div class="border-2 border-hacker-green bg-hacker-dark p-6">
-				<div class="font-mono font-bold text-lg mb-2 text-hacker-green">&gt; STATUS</div>
-				<div class="text-sm text-hacker-green-dark">
-					<span class="inline-block w-2 h-2 bg-hacker-green rounded-full mr-2 animate-pulse"></span>
-					SELF EMPLOYED
+			<a href="/hack" class="group">
+				<div class="border-2 border-hacker-green bg-hacker-dark p-6 hover:bg-hacker-green hover:text-hacker-black transition-all shadow-hacker hover:shadow-hacker-glow">
+					<div class="font-mono font-bold text-lg mb-2">&gt; HACK CHALLENGE</div>
+					<div class="text-sm text-hacker-green-dark group-hover:text-hacker-black">
+						Test your hacking skills in an interactive game
+					</div>
 				</div>
-			</div>
+			</a>
 		</div>
 
 		<!-- About Section -->

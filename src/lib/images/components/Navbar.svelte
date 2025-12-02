@@ -13,6 +13,7 @@
   $: isActiveProjects = currentPath === '/projects';
   $: isActiveSkills = currentPath === '/skills';
   $: isActiveContact = currentPath === '/contact';
+  $: isActiveHack = currentPath === '/hack';
 
   // Debugging logs
   // $: console.log('Current Path:', currentPath);
@@ -140,6 +141,21 @@
             >
               &gt; CONTACT
             </a>
+            <!-- Hack Game Link -->
+            <a
+              href="/hack"
+              class="px-4 py-2 text-sm font-mono font-bold border border-hacker-green transition-all"
+              class:bg-hacker-green={isActiveHack}
+              class:text-hacker-black={isActiveHack}
+              class:text-hacker-green={!isActiveHack}
+              class:shadow-hacker-glow={isActiveHack}
+              class:hover:bg-hacker-green={!isActiveHack}
+              class:hover:text-hacker-black={!isActiveHack}
+              class:hover:shadow-hacker={!isActiveHack}
+              aria-current={isActiveHack ? 'page' : undefined}
+            >
+              &gt; HACK
+            </a>
           </div>
         </div>
       </div>
@@ -205,6 +221,20 @@
           on:click={() => { isOpen = false; }}
         >
           &gt; CONTACT
+        </a>
+        <!-- Hack Game Link -->
+        <a
+          href="/hack"
+          class="block px-3 py-2 text-base font-mono font-bold border border-hacker-green transition-all"
+          class:bg-hacker-green={isActiveHack}
+          class:text-hacker-black={isActiveHack}
+          class:text-hacker-green={!isActiveHack}
+          class:hover:bg-hacker-green={!isActiveHack}
+          class:hover:text-hacker-black={!isActiveHack}
+          aria-current={isActiveHack ? 'page' : undefined}
+          on:click={() => { isOpen = false; }}
+        >
+          &gt; HACK
         </a>
       </div>
     </div>
