@@ -1,157 +1,150 @@
-<script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-
-	let displayText = '';
-	let currentIndex = 0;
-	let showCursor = true;
-	let mounted = false;
-	const fullText = "> INITIALIZING SYSTEM...\n> LOADING PORTFOLIO...\n> CONNECTION ESTABLISHED\n\n> WELCOME TO DAVID DYCK'S TERMINAL\n> FULL-STACK SOFTWARE DEVELOPER\n> SPECIALIZING IN WEB DEVELOPMENT\n\n> STATUS: AVAILABLE FOR PROJECTS\n> OS: macOS | Windows | Linux\n> LOCATION: REMOTE\n\n> TYPE 'help' FOR COMMANDS";
-
-	let typeInterval: ReturnType<typeof setInterval> | null = null;
-	let cursorInterval: ReturnType<typeof setInterval> | null = null;
-
-	function typeNextChar() {
-		if (!mounted || currentIndex >= fullText.length) {
-			if (typeInterval) {
-				clearInterval(typeInterval);
-				typeInterval = null;
-			}
-			return;
-		}
-		
-		displayText = fullText.slice(0, currentIndex + 1);
-		currentIndex++;
-	}
-
-	onMount(() => {
-		mounted = true;
-		
-		// Typing animation - use async function to ensure proper DOM updates
-		typeInterval = setInterval(() => {
-			typeNextChar();
-		}, 30);
-
-		// Cursor blink - only start after a short delay to ensure DOM is ready
-		setTimeout(() => {
-			if (mounted) {
-				cursorInterval = setInterval(() => {
-					if (mounted) {
-						showCursor = !showCursor;
-					}
-				}, 530);
-			}
-		}, 200);
-	});
-
-	onDestroy(() => {
-		mounted = false;
-		if (typeInterval) {
-			clearInterval(typeInterval);
-			typeInterval = null;
-		}
-		if (cursorInterval) {
-			clearInterval(cursorInterval);
-			cursorInterval = null;
-		}
-	});
-</script>
-
 <svelte:head>
-	<title>David's Portfolio | Terminal</title>
-	<meta name="description" content="David Dyck - Full-Stack Developer Portfolio" />
-	<link rel="manifest" href="/manifest.json">
+	<title>David Dyck — Software engineer</title>
+	<meta
+		name="description"
+		content="David Dyck, software engineer. Programming, remotely."
+	/>
 </svelte:head>
 
-<section class="min-h-screen bg-hacker-black text-hacker-green p-4 sm:p-8">
-	<div class="max-w-4xl mx-auto">
-		<!-- Terminal Window -->
-		<div class="border-2 border-hacker-green shadow-hacker-glow bg-hacker-dark p-6 font-mono">
-			<!-- Terminal Header -->
-			<div class="flex items-center justify-between mb-4 pb-2 border-b border-hacker-green">
-				<div class="flex items-center gap-2">
-					<div class="w-3 h-3 bg-red-500 rounded-full"></div>
-					<div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-					<div class="w-3 h-3 bg-hacker-green rounded-full"></div>
-					<span class="ml-4 text-hacker-green text-sm">TERMINAL v2.0</span>
+<section class="bg-paper text-ink">
+	<div class="page-shell">
+		<header class="reveal mb-16 sm:mb-24">
+			<p class="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+				Software · programming · remote
+			</p>
+			<h1
+				class="mt-4 font-serif text-5xl leading-[0.95] tracking-tight text-ink sm:text-7xl md:text-[5.25rem]"
+			>
+				David Dyck
+			</h1>
+			<p class="mt-5 max-w-md text-lg text-muted sm:text-xl">
+				Software engineer. I write programs. Remote.
+			</p>
+		</header>
+
+		<div class="mb-24 grid grid-cols-1 gap-10 md:mb-32 md:grid-cols-12 md:gap-16">
+			<div class="reveal reveal-2 space-y-5 text-[1.05rem] leading-[1.7] md:col-span-7">
+				<p>
+					I write software that has to survive after the demo. Not the version that looks
+					finished in a screenshot — the one that still works when a field is empty, a
+					request times out, or someone who didn’t write it has to change a line six months
+					later.
+				</p>
+				<p>
+					The job is the product, the data, and whether the next person can read the code. I
+					don’t pick a library as a personality. If a codebase already has a shape, I work
+					in that shape. If I’m starting fresh, I pick whatever will still be boring to
+					maintain in two years.
+				</p>
+				<p>
+					I work on macOS, Windows, and Linux because that is the actual landscape:
+					different machines, different clients, different constraints. I don’t romanticize
+					tools. A browser, a server, a database, and version control will get you most of
+					the way.
+				</p>
+			</div>
+
+			<aside class="reveal reveal-3 md:col-span-5 md:pt-1">
+				<div class="border border-rule bg-surface p-6 sm:p-7">
+					<p class="mb-5 font-mono text-xs uppercase tracking-wide text-muted">Now</p>
+					<ul class="space-y-3 text-sm leading-relaxed">
+						<li>Available for contract and product work.</li>
+						<li>Building web software, remotely.</li>
+						<li>
+							If you have something specific, start on the
+							<a href="/contact" class="text-link">contact form</a>.
+						</li>
+						<li>Clear problem, real users — that’s the work I take.</li>
+					</ul>
 				</div>
-				<span class="text-hacker-green-dark text-xs">root@portfolio:~$</span>
-			</div>
-
-			<!-- Terminal Content -->
-			<div class="terminal-output text-sm leading-relaxed whitespace-pre-wrap">
-				<span>{displayText}</span><span class="terminal-cursor">{mounted && showCursor ? '_' : ' '}</span>
-			</div>
-
-			<!-- Command Prompt -->
-			<div class="mt-4 flex items-center">
-				<span class="text-hacker-green">root@portfolio:~$</span>
-				<span class="ml-2 text-hacker-green-bright animate-pulse">█</span>
-			</div>
+			</aside>
 		</div>
 
-		<!-- Quick Actions -->
-		<div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-			<a href="/projects" class="group">
-				<div class="border-2 border-hacker-green bg-hacker-dark p-6 hover:bg-hacker-green hover:text-hacker-black transition-all shadow-hacker hover:shadow-hacker-glow">
-					<div class="font-mono font-bold text-lg mb-2">&gt; VIEW PROJECTS</div>
-					<div class="text-sm text-hacker-green-dark group-hover:text-hacker-black">
-						Browse my latest work and contributions
-					</div>
+		<section class="mb-28 sm:mb-36">
+			<div class="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
+				<h2 class="font-serif text-3xl text-ink sm:text-4xl md:col-span-4">Work</h2>
+				<div class="md:col-span-8">
+					<p class="mb-8 leading-relaxed text-muted">
+						Selected work lives on the Work page — titles and links load from the project
+						archive.
+					</p>
+					<ul class="stagger">
+						<li class="border-t border-rule">
+							<a href="/projects" class="group flex items-start justify-between gap-6 py-5">
+								<span>
+									<span class="font-serif text-xl group-hover:text-accent"
+										>Things that have to last</span
+									>
+									<span class="mt-2 block text-sm leading-relaxed text-muted">
+										Web applications that need to be maintained after launch, not just
+										stood up for a walkthrough.
+									</span>
+								</span>
+								<span class="mt-1 shrink-0 text-sm text-muted group-hover:text-accent">View</span>
+							</a>
+						</li>
+						<li class="border-t border-rule">
+							<a href="/projects" class="group flex items-start justify-between gap-6 py-5">
+								<span>
+									<span class="font-serif text-xl group-hover:text-accent"
+										>The part people click</span
+									>
+									<span class="mt-2 block text-sm leading-relaxed text-muted">
+										Screens that stay readable after the visual pass — including empty,
+										error, and “this field is missing.”
+									</span>
+								</span>
+								<span class="mt-1 shrink-0 text-sm text-muted group-hover:text-accent">View</span>
+							</a>
+						</li>
+						<li class="border-t border-b border-rule">
+							<a href="/projects" class="group flex items-start justify-between gap-6 py-5">
+								<span>
+									<span class="font-serif text-xl group-hover:text-accent">The layer underneath</span>
+									<span class="mt-2 block text-sm leading-relaxed text-muted">
+										APIs and the data model everything else sits on.
+									</span>
+								</span>
+								<span class="mt-1 shrink-0 text-sm text-muted group-hover:text-accent">View</span>
+							</a>
+						</li>
+					</ul>
+					<p class="mt-8">
+						<a href="/projects" class="btn-primary">See the archive</a>
+					</p>
+					<p class="mt-6 max-w-prose text-sm leading-relaxed text-muted">
+						I look for a clear problem, real users, and code someone else could inherit
+						without a decoder ring.
+					</p>
 				</div>
-			</a>
-
-			<a href="/skills" class="group">
-				<div class="border-2 border-hacker-green bg-hacker-dark p-6 hover:bg-hacker-green hover:text-hacker-black transition-all shadow-hacker hover:shadow-hacker-glow">
-					<div class="font-mono font-bold text-lg mb-2">&gt; MY SKILLS</div>
-					<div class="text-sm text-hacker-green-dark group-hover:text-hacker-black">
-						Technologies and tools I work with
-					</div>
-				</div>
-			</a>
-
-			<a href="/contact" class="group">
-				<div class="border-2 border-hacker-green bg-hacker-dark p-6 hover:bg-hacker-green hover:text-hacker-black transition-all shadow-hacker hover:shadow-hacker-glow">
-					<div class="font-mono font-bold text-lg mb-2">&gt; CONTACT ME</div>
-					<div class="text-sm text-hacker-green-dark group-hover:text-hacker-black">
-						Let's collaborate on your next project
-					</div>
-				</div>
-			</a>
-
-			<a href="/hack" class="group">
-				<div class="border-2 border-hacker-green bg-hacker-dark p-6 hover:bg-hacker-green hover:text-hacker-black transition-all shadow-hacker hover:shadow-hacker-glow">
-					<div class="font-mono font-bold text-lg mb-2">&gt; HACK CHALLENGE</div>
-					<div class="text-sm text-hacker-green-dark group-hover:text-hacker-black">
-						Test your hacking skills in an interactive game
-					</div>
-				</div>
-			</a>
-		</div>
-
-		<!-- About Section -->
-		<div class="mt-8 border-2 border-hacker-green bg-hacker-dark p-6 shadow-hacker">
-			<div class="font-mono font-bold text-xl mb-4 text-hacker-green">&gt; ABOUT_ME.txt</div>
-			<div class="text-sm leading-relaxed space-y-2">
-				<p class="text-hacker-green-dark">// Full-stack software developer with experience across multiple platforms</p>
-				<p class="mt-4">I'm <span class="text-hacker-green-bright font-bold">David Dyck</span>, a passionate developer who creates innovative web solutions.</p>
-				<p>With expertise spanning <span class="text-hacker-green-bright">macOS</span>, <span class="text-hacker-green-bright">Windows</span>, and <span class="text-hacker-green-bright">Linux</span>, I bring cross-platform knowledge to every project.</p>
-				<p class="mt-4 text-hacker-green-dark">// Always learning, always building</p>
 			</div>
-		</div>
+		</section>
+
+		<section class="mb-20 border-t border-rule pt-14 sm:mb-24 sm:pt-16">
+			<h2 class="mb-10 font-serif text-3xl text-ink sm:mb-12 sm:text-4xl">How I tend to work</h2>
+			<div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-16">
+				<div class="md:col-span-7">
+					<p class="mb-3 font-serif text-xl">Ship a slice, then another</p>
+					<p class="text-[1.05rem] leading-relaxed">
+						I ship in increments. A thin slice you can click is more useful than a
+						complete plan that never leaves a document. You see the thing, you argue with
+						it, we change direction before a month disappears into the wrong version.
+					</p>
+				</div>
+				<div class="md:col-span-5 md:pt-1">
+					<p class="mb-3 font-serif text-xl">Read it before you replace it</p>
+					<p class="leading-relaxed">
+						I read existing code before I rewrite it. Most systems aren’t failing because
+						the original idea was stupid. They’re failing because nobody stayed with them.
+						Replacing a mess you haven’t understood is how you get a second mess.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<p class="border-t border-rule pt-8 text-sm text-muted">
+			If you have a problem that needs an engineer,
+			<a href="/contact" class="text-link">use the contact page</a>.
+		</p>
 	</div>
 </section>
-
-<style>
-	.terminal-output {
-		min-height: 300px;
-		font-family: 'Fira Mono', 'Courier New', monospace;
-	}
-
-	.terminal-cursor {
-		display: inline-block;
-		min-width: 1ch;
-	}
-	
-	
-</style>
-

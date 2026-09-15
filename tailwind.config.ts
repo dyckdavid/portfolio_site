@@ -5,30 +5,28 @@ import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
 
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+	content: ['./src/**/*.{html,js,svelte,ts}'],
+	darkMode: 'class',
 
-  theme: {
-    extend: {
-      colors: {
-        'hacker-green': '#00ff00',
-        'hacker-green-dark': '#00cc00',
-        'hacker-green-bright': '#00ff41',
-        'hacker-black': '#000000',
-        'hacker-dark': '#0a0a0a',
-        'hacker-gray': '#1a1a1a',
-      },
-      fontFamily: {
-        'mono': ['Fira Mono', 'Courier New', 'monospace'],
-      },
-      boxShadow: {
-        'hacker': '0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.3)',
-        'hacker-glow': '0 0 5px rgba(0, 255, 0, 0.8), 0 0 10px rgba(0, 255, 0, 0.6), 0 0 15px rgba(0, 255, 0, 0.4)',
-      },
-      animation: {
-        'glow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      }
-    }
-  },
+	theme: {
+		extend: {
+			colors: {
+				paper: 'rgb(var(--paper) / <alpha-value>)',
+				ink: 'rgb(var(--ink) / <alpha-value>)',
+				muted: 'rgb(var(--muted) / <alpha-value>)',
+				rule: 'rgb(var(--rule) / <alpha-value>)',
+				accent: 'rgb(var(--accent) / <alpha-value>)',
+				'accent-hover': 'rgb(var(--accent-hover) / <alpha-value>)',
+				surface: 'rgb(var(--surface) / <alpha-value>)',
+				danger: 'rgb(var(--danger) / <alpha-value>)'
+			},
+			fontFamily: {
+				serif: ['Source Serif 4', 'Iowan Old Style', 'Palatino', 'Georgia', 'serif'],
+				sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+				mono: ['IBM Plex Mono', 'ui-monospace', 'monospace']
+			}
+		}
+	},
 
-  plugins: [typography, forms, containerQueries, aspectRatio]
+	plugins: [typography, forms, containerQueries, aspectRatio]
 } as Config;

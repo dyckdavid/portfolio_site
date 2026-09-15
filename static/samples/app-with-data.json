@@ -1,0 +1,43 @@
+{
+	"kind": "app",
+	"name": "Inbox Relay",
+	"slug": "inbox-relay",
+	"tagline": "Forward support mail to one place.",
+	"description": "A sample app that does collect a little data, so you can see the privacy rows fill in. People sign in with email. Crash reports go to a diagnostics service. Nothing is used for ads.",
+	"platform": "ios",
+	"category": "Productivity",
+	"bundleId": "com.example.inboxrelay",
+	"appStoreUrl": "",
+	"playStoreUrl": "",
+	"website": "https://example.com",
+	"iconUrl": "",
+	"supportUrl": "https://example.com/contact",
+	"status": "in-review",
+	"featured": false,
+	"published": true,
+	"sortOrder": 1,
+	"privacyContactEmail": "privacy@example.com",
+	"privacyIntro": "Inbox Relay stores the email address you use to sign in so the app can show your inbox. Crash data is sent only to find bugs. It is not sold and it is not used for advertising.",
+	"privacyLastUpdated": "2026-09-14",
+	"collectsData": true,
+	"dataUsedForTracking": false,
+	"dataLinkedToIdentity": true,
+	"dataTypes": [
+		{
+			"category": "Contact Info",
+			"types": "email address",
+			"purpose": "app functionality",
+			"linkedToUser": true,
+			"usedForTracking": false
+		},
+		{
+			"category": "Diagnostics",
+			"types": "crash data",
+			"purpose": "analytics",
+			"linkedToUser": false,
+			"usedForTracking": false
+		}
+	],
+	"thirdParties": "A crash reporter receives stack traces. No advertising SDKs.",
+	"childrenPolicy": "This app is not directed at children under 13, and it does not knowingly collect personal information from children."
+}

@@ -1,101 +1,59 @@
 <script lang="ts">
-	const skillCategories = [
+	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+
+	const groups = [
 		{
-			name: 'FRONTEND',
-			skills: [
-				{ name: 'HTML5', level: 95 },
-				{ name: 'CSS3', level: 80 },
-				{ name: 'JavaScript', level: 90 },
-				{ name: 'TypeScript', level: 90 },
-				{ name: 'Svelte', level: 90 },
-				{ name: 'React', level: 80 },
-				{ name: 'Tailwind CSS', level: 92 },
-			]
+			name: 'Interfaces',
+			items: 'Pages, forms, and states that stay readable after the visual pass — empty, error, and the cases nobody demoed.'
 		},
 		{
-			name: 'BACKEND',
-			skills: [
-				{ name: 'Node.js', level: 85 },
-				{ name: 'Python', level: 82 },
-				{ name: 'POSTGRESQL', level: 60 },
-				{ name: 'REST APIs', level: 30 },
-				{ name: 'Database Design', level: 80 },
-			]
+			name: 'Services',
+			items: 'APIs with contracts you can rely on, not a pile of special cases that only make sense if you wrote them.'
 		},
 		{
-			name: 'TOOLS & TECH',
-			skills: [
-				{ name: 'Git', level: 90 },
-				{ name: 'Linux', level: 80 },
-				{ name: 'macOS', level: 100 },
-				{ name: 'Windows', level: 100 },
-				{ name: 'VS Code', level: 92 },
-				{ name: 'Docker', level: 65 },
-			]
+			name: 'Data',
+			items: 'Models that match how the product actually works, including the awkward parts people hope they can paper over.'
+		},
+		{
+			name: 'Environment',
+			items: 'I work on macOS, Windows, and Linux. Clients have machines. If it only runs where I developed it, it isn’t finished.'
 		}
 	];
-
-	function getSkillBar(level: number) {
-		const bars = Math.floor(level / 10);
-		return '█'.repeat(bars) + '░'.repeat(10 - bars);
-	}
 </script>
 
 <svelte:head>
-	<title>Skills | David's Portfolio</title>
-	<meta name="description" content="David's Technical Skills" />
-	<link rel="manifest" href="/manifest.json">
+	<title>Skills — David Dyck</title>
+	<meta
+		name="description"
+		content="What David Dyck actually does — interfaces, services, data, and shipping on other people’s machines."
+	/>
+	<link rel="manifest" href="/manifest.json" />
 </svelte:head>
 
-<section class="min-h-screen bg-hacker-black text-hacker-green py-8 px-4">
-	<div class="max-w-6xl mx-auto">
-		<!-- Header -->
-		<div class="border-2 border-hacker-green bg-hacker-dark p-6 mb-8 shadow-hacker-glow">
-			<div class="font-mono text-2xl font-bold text-hacker-green">
-				&gt; SKILLS_INVENTORY
-			</div>
-			<div class="text-sm text-hacker-green-dark mt-2">
-				// Loading technical capabilities...
-			</div>
-		</div>
+<section class="bg-paper text-ink">
+	<div class="mx-auto max-w-[1080px] px-6 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
+		<Breadcrumb current="Skills" />
+		<header class="reveal">
+			<h1 class="font-serif text-4xl tracking-tight text-ink sm:text-5xl">Skills</h1>
+			<p class="mt-5 max-w-xl leading-relaxed text-muted">
+				What the work is. Not a list of libraries.
+			</p>
+		</header>
 
-		<!-- Skills Grid -->
-		<div class="space-y-6">
-			{#each skillCategories as category}
-				<div class="border-2 border-hacker-green bg-hacker-dark p-6 shadow-hacker">
-					<div class="font-mono font-bold text-xl text-hacker-green mb-6">
-						&gt; {category.name}
-					</div>
-					
-					<div class="space-y-4">
-						{#each category.skills as skill}
-							<div class="font-mono">
-								<div class="flex items-center justify-between mb-1">
-									<span class="text-hacker-green-bright">{skill.name}</span>
-									<span class="text-hacker-green-dark text-sm">{skill.level}%</span>
-								</div>
-								<div class="text-hacker-green text-xs">
-									[{getSkillBar(skill.level)}]
-								</div>
-							</div>
-						{/each}
-					</div>
+		<dl class="stagger mt-14 border-t border-rule">
+			{#each groups as group}
+				<div
+					class="grid grid-cols-1 gap-1 border-b border-rule py-5 sm:grid-cols-[11rem_1fr] sm:gap-8"
+				>
+					<dt class="font-serif text-lg text-ink">{group.name}</dt>
+					<dd class="leading-relaxed text-muted">{group.items}</dd>
 				</div>
 			{/each}
-		</div>
+		</dl>
 
-		<!-- Additional Info -->
-		<div class="mt-8 border-2 border-hacker-green bg-hacker-dark p-6">
-			<div class="font-mono text-sm">
-				<div class="text-hacker-green mb-4">&gt; ADDITIONAL_INFO</div>
-				<div class="text-hacker-green-dark space-y-2 text-sm">
-					<div>// Always learning new technologies</div>
-					<div>// Passionate about clean code and best practices</div>
-					<div>// Experience with cross-platform development</div>
-					<div>// Focus on performance and user experience</div>
-				</div>
-			</div>
-		</div>
+		<p class="mt-12 max-w-xl leading-relaxed text-muted">
+			I use whatever a codebase already runs on. Percentages would be theater. When it fits, I
+			pick the boring reliable option, not the one that looks newest on a résumé.
+		</p>
 	</div>
 </section>
-

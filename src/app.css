@@ -1,146 +1,190 @@
+@import '@fontsource/source-serif-4/400.css';
+@import '@fontsource/source-serif-4/600.css';
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import '@fontsource/fira-mono';
+
+:root {
+	--paper: 246 243 238;
+	--ink: 31 28 24;
+	--muted: 92 87 79;
+	--rule: 217 212 203;
+	--accent: 139 58 26;
+	--accent-hover: 107 44 20;
+	--surface: 255 252 247;
+	--danger: 124 74 58;
+	color-scheme: light;
+}
+
+html.dark {
+	--paper: 22 20 18;
+	--ink: 236 230 220;
+	--muted: 164 156 145;
+	--rule: 58 52 46;
+	--accent: 212 137 92;
+	--accent-hover: 228 165 122;
+	--surface: 31 28 24;
+	--danger: 214 148 122;
+	color-scheme: dark;
+}
 
 @layer base {
-    :root {
-      --hacker-green: #00ff00;
-      --hacker-green-dark: #00cc00;
-      --hacker-green-bright: #00ff41;
-      --hacker-black: #000000;
-      --hacker-dark: #0a0a0a;
-      --hacker-gray: #1a1a1a;
-      --hacker-text: #00ff00;
-    }
-  }
+	html {
+		background-color: rgb(var(--paper));
+		scrollbar-color: rgb(var(--muted)) rgb(var(--rule));
+	}
 
-  @layer base {
-    * {
-      font-family: 'Fira Mono', 'Courier New', monospace;
-    }
-    
-    body {
-      background-color: var(--hacker-black);
-      background-image: 
-        linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      color: var(--hacker-green);
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      position: relative;
-    }
+	body {
+		margin: 0;
+		background-color: rgb(var(--paper));
+		color: rgb(var(--ink));
+		font-family: 'IBM Plex Sans', system-ui, sans-serif;
+		transition: background-color 0.15s ease, color 0.15s ease;
+	}
 
-    /* Subtle binary code background pattern */
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(0, 255, 0, 0.01) 2px,
-          rgba(0, 255, 0, 0.01) 4px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          transparent,
-          transparent 2px,
-          rgba(0, 255, 0, 0.01) 2px,
-          rgba(0, 255, 0, 0.01) 4px
-        );
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.3;
-    }
+	::selection {
+		background: rgb(var(--accent));
+		color: rgb(var(--paper));
+	}
 
-    /* Terminal cursor effect */
-    .terminal-cursor::after {
-      content: '_';
-      animation: blink 1s infinite;
-    }
+	a:focus-visible,
+	button:focus-visible,
+	input:focus-visible,
+	textarea:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: 2px;
+	}
 
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
+	input,
+	textarea {
+		color-scheme: inherit;
+	}
 
-    /* Glitch effect */
-    @keyframes glitch {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(-2px, -2px); }
-      60% { transform: translate(2px, 2px); }
-      80% { transform: translate(2px, -2px); }
-      100% { transform: translate(0); }
-    }
+	::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
 
-    .glitch {
-      animation: glitch 0.3s infinite;
-    }
+	::-webkit-scrollbar-track {
+		background: rgb(var(--rule));
+	}
 
-    /* Scanline effect */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        transparent 50%,
-        rgba(0, 255, 0, 0.03) 50%
-      );
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 10000;
-      animation: scanline 8s linear infinite;
-    }
+	::-webkit-scrollbar-thumb {
+		background: rgb(var(--muted));
+	}
 
-    @keyframes scanline {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(4px); }
-    }
+	::-webkit-scrollbar-thumb:hover {
+		background: rgb(var(--ink));
+	}
+}
 
-    /* Terminal typing effect */
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
+@layer components {
+	.text-link {
+		@apply text-accent underline-offset-[3px] hover:text-accent-hover hover:underline;
+	}
 
-    @keyframes blink-caret {
-      from, to { border-color: transparent; }
-      50% { border-color: var(--hacker-green); }
-    }
+	.btn-primary {
+		@apply inline-flex items-center justify-center border border-ink bg-ink px-4 py-2 text-sm text-paper transition-colors hover:bg-transparent hover:text-ink disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-ink disabled:hover:text-paper;
+	}
 
-    /* Hacker-style scrollbar */
-    ::-webkit-scrollbar {
-      width: 12px;
-    }
+	.page-shell {
+		@apply relative mx-auto max-w-[1080px] px-6 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24;
+	}
 
-    ::-webkit-scrollbar-track {
-      background: var(--hacker-black);
-    }
+	.reveal {
+		animation: reveal 0.7s ease both;
+	}
 
-    ::-webkit-scrollbar-thumb {
-      background: var(--hacker-green);
-      border: 2px solid var(--hacker-black);
-    }
+	.reveal-2 {
+		animation-delay: 0.12s;
+	}
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--hacker-green-bright);
-    }
+	.reveal-3 {
+		animation-delay: 0.24s;
+	}
 
-    /* Selection color */
-    ::selection {
-      background: var(--hacker-green);
-      color: var(--hacker-black);
-    }
-  }
+	.reveal-4 {
+		animation-delay: 0.36s;
+	}
+
+	.img-zoom {
+		transform: scale(1);
+		transition: transform 0.8s ease;
+	}
+
+	.group:hover .img-zoom {
+		transform: scale(1.035);
+	}
+
+	.stagger > * {
+		animation: reveal 0.65s ease both;
+	}
+
+	.stagger > *:nth-child(1) {
+		animation-delay: 0.05s;
+	}
+	.stagger > *:nth-child(2) {
+		animation-delay: 0.12s;
+	}
+	.stagger > *:nth-child(3) {
+		animation-delay: 0.19s;
+	}
+	.stagger > *:nth-child(4) {
+		animation-delay: 0.26s;
+	}
+	.stagger > *:nth-child(5) {
+		animation-delay: 0.33s;
+	}
+}
+
+@keyframes reveal {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reveal,
+	.reveal-2,
+	.reveal-3,
+	.reveal-4,
+	.stagger > * {
+		animation: none;
+	}
+
+	.img-zoom,
+	.group:hover .img-zoom {
+		animation: none;
+		transition: none;
+		transform: none;
+	}
+}
+
+@layer utilities {
+	.skip-link {
+		position: absolute;
+		left: 1rem;
+		top: -100%;
+		z-index: 100;
+		padding: 0.5rem 0.75rem;
+		background: rgb(var(--ink));
+		color: rgb(var(--paper));
+		font-size: 0.875rem;
+		text-decoration: none;
+	}
+
+	.skip-link:focus {
+		top: 0.75rem;
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: 2px;
+	}
+}
