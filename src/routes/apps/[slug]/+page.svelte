@@ -1,17 +1,10 @@
 <script lang="ts">
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import { formatPlatforms } from '$lib/platforms';
 
 	let { data } = $props();
 
 	const app = $derived(data.app);
-
-	const platformLabel: Record<string, string> = {
-		ios: 'iOS',
-		android: 'Android',
-		macos: 'macOS',
-		web: 'Web',
-		multi: 'Multi-platform'
-	};
 </script>
 
 <svelte:head>
@@ -49,7 +42,7 @@
 		<dl class="mt-10 max-w-2xl border-t border-rule">
 			<div class="flex gap-6 border-b border-rule py-3.5">
 				<dt class="w-24 shrink-0 text-sm text-muted">Platform</dt>
-				<dd>{platformLabel[app.platform] ?? app.platform}</dd>
+				<dd>{formatPlatforms(app)}</dd>
 			</div>
 			{#if app.category}
 				<div class="flex gap-6 border-b border-rule py-3.5">

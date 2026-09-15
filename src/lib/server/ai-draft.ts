@@ -1,6 +1,7 @@
 import { defaultProjectFormValues, type ProjectFormValues } from '$lib/project-form';
 import { formatDataTypes, type AppFormValues } from '$lib/server/apps';
 import { appPlatform, appStatus, projectStatus, type DataTypeEntry } from '$lib/server/db/schema';
+import { primaryPlatform, resolvePlatforms } from '$lib/platforms';
 import { slugify } from '$lib/server/slug';
 import { xaiJson } from '$lib/server/xai';
 
@@ -58,6 +59,7 @@ const appSchema = {
 		'tagline',
 		'description',
 		'platform',
+		'platforms',
 		'category',
 		'bundleId',
 		'appStoreUrl',
@@ -85,6 +87,10 @@ const appSchema = {
 		tagline: { type: 'string' },
 		description: { type: 'string' },
 		platform: { type: 'string', enum: [...appPlatform] },
+		platforms: {
+			type: 'array',
+			items: { type: 'string', enum: [...appPlatform] }
+		},
 		category: { type: 'string' },
 		bundleId: { type: 'string' },
 		appStoreUrl: { type: 'string' },
@@ -198,7 +204,7 @@ export async function draftApp(prompt: string): Promise<AppFormValues> {
 	const raw = await xaiJson<AppRaw>({
 		system: `${voice}
 
-Fill an App Store listing and privacy page. Write privacyIntro as a short policy in first person (or "this app") that App Store Connect can link to. If the prompt does not mention data collection, assume the app collects nothing, tracking is no, identity linking is no, dataTypes is empty, and say so clearly. If it does collect data, list only the types mentioned, using Apple-style categories (Contact Info, Location, Identifiers, Usage Data, Diagnostics, etc.). childrenPolicy should say the app is not directed at children unless the prompt says otherwise. privacyLastUpdated is today's date (${today}) as YYYY-MM-DD. privacyContactEmail only if given. Leave store URLs, bundle IDs, and icon URLs empty unless provided. platform is ios, android, macos, web, or multi. status is development, in-review, live, or sunset.`,
+Fill an App Store listing and privacy page. Write privacyIntro as a short policy in first person (or "this app") that App Store Connect can link to. If the prompt does not mention data collection, assume the app collects nothing, tracking is no, identity linking is no, dataTypes is empty, and say so clearly. If it does collect data, list only the types mentioned, using Apple-style categories (Contact Info, Location, Identifiers, Usage Data, Diagnostics, etc.). childrenPolicy should say the app is not directed at children unless the prompt says otherwise. privacyLastUpdated is today's date (${today}) as YYYY-MM-DD. privacyContactEmail only if given. Leave store URLs, bundle IDs, and icon URLs empty unless provided. platforms is an array of where it runs: ios, ipados, macos, watchos, tvos, visionos, android, android-tv, wearos, android-auto, windows, xbox, linux, web, steam, meta-quest, amazon-fire. platform is the first of those. status is development, in-review, live, or sunset.`,
 		user: prompt,
 		schemaName: 'app_draft',
 		schema: appSchema
@@ -212,9 +218,16 @@ Fill an App Store listing and privacy page. Write privacyIntro as a short policy
 		slug: slugify(raw.slug || raw.name),
 		tagline: raw.tagline.trim(),
 		description: raw.description.trim(),
-		platform: appPlatform.includes(raw.platform as (typeof appPlatform)[number])
-			? raw.platform
-			: 'ios',
+		platform: primaryPlatform(
+			resolvePlatforms({
+				platform: raw.platform,
+				platforms: Array.isArray(raw.platforms) ? raw.platforms : []
+			})
+		),
+		platforms: resolvePlatforms({
+			platform: raw.platform,
+			platforms: Array.isArray(raw.platforms) ? raw.platforms : []
+		}),
 		category: raw.category.trim(),
 		bundleId: raw.bundleId.trim(),
 		appStoreUrl: cleanUrl(raw.appStoreUrl),

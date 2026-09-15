@@ -1,9 +1,12 @@
+import { isAppPlatform, primaryPlatform, resolvePlatforms } from '$lib/platforms';
+
 export type AppImportValues = {
 	name: string;
 	slug: string;
 	tagline: string;
 	description: string;
 	platform: string;
+	platforms: string[];
 	category: string;
 	bundleId: string;
 	appStoreUrl: string;
@@ -26,7 +29,6 @@ export type AppImportValues = {
 	childrenPolicy: string;
 };
 
-const appPlatforms = ['ios', 'android', 'macos', 'web', 'multi'] as const;
 const appStatuses = ['development', 'in-review', 'live', 'sunset'] as const;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -93,11 +95,21 @@ export function parseAppImportJson(rawText: string): { values: AppImportValues }
 		return { error: 'App JSON needs a name.' };
 	}
 
-	const platform = text(raw.platform) || 'ios';
-	const status = text(raw.status) || 'development';
-	if (!appPlatforms.includes(platform as (typeof appPlatforms)[number])) {
-		return { error: `Platform must be one of: ${appPlatforms.join(', ')}.` };
+	const fromList = Array.isArray(raw.platforms)
+		? raw.platforms.map((item) => text(item)).filter(Boolean)
+		: [];
+	const platforms = resolvePlatforms({
+		platform: text(raw.platform) || undefined,
+		platforms: fromList
+	});
+	if (!platforms.length && text(raw.platform) && !isAppPlatform(text(raw.platform))) {
+		return { error: `Unknown platform: ${text(raw.platform)}.` };
 	}
+	if (!platforms.length) {
+		return { error: 'App JSON needs at least one platform.' };
+	}
+	const platform = primaryPlatform(platforms);
+	const status = text(raw.status) || 'development';
 	if (!appStatuses.includes(status as (typeof appStatuses)[number])) {
 		return { error: `Status must be one of: ${appStatuses.join(', ')}.` };
 	}
@@ -109,6 +121,7 @@ export function parseAppImportJson(rawText: string): { values: AppImportValues }
 			tagline: text(raw.tagline),
 			description: text(raw.description),
 			platform,
+			platforms,
 			category: text(raw.category),
 			bundleId: text(raw.bundleId),
 			appStoreUrl: text(raw.appStoreUrl),

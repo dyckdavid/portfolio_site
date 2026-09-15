@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { platformGroups, primaryPlatform, resolvePlatforms } from '$lib/platforms';
+
 	type Values = {
 		name?: string;
 		slug?: string;
 		tagline?: string;
 		description?: string;
 		platform?: string;
+		platforms?: string[];
 		category?: string;
 		bundleId?: string;
 		appStoreUrl?: string;
@@ -54,19 +57,38 @@
 	const field =
 		'w-full rounded-none border border-rule bg-surface px-3 py-2.5 text-ink placeholder:text-muted';
 
-	const platforms = [
-		{ value: 'ios', label: 'iOS', hint: 'iPhone and iPad' },
-		{ value: 'android', label: 'Android', hint: 'Play Store' },
-		{ value: 'macos', label: 'macOS', hint: 'Mac App Store or download' },
-		{ value: 'web', label: 'Web', hint: 'Browser app, no store listing' },
-		{ value: 'multi', label: 'Multi-platform', hint: 'More than one of the above' }
-	];
-
 	const statuses = [
 		{ value: 'development', label: 'Development', hint: 'You are still building it' },
 		{ value: 'in-review', label: 'In review', hint: 'Waiting on the store' },
 		{ value: 'live', label: 'Live', hint: 'People can get it now' },
 		{ value: 'sunset', label: 'Sunset', hint: 'No longer offered' }
+	];
+
+	const storeCategories = [
+		'Books',
+		'Business',
+		'Developer Tools',
+		'Education',
+		'Entertainment',
+		'Finance',
+		'Food & Drink',
+		'Games',
+		'Graphics & Design',
+		'Health & Fitness',
+		'Lifestyle',
+		'Medical',
+		'Music',
+		'Navigation',
+		'News',
+		'Photo & Video',
+		'Productivity',
+		'Reference',
+		'Shopping',
+		'Social Networking',
+		'Sports',
+		'Travel',
+		'Utilities',
+		'Weather'
 	];
 
 	const categories = [
@@ -96,6 +118,18 @@
 			.replace(/^-+|-+$/g, '')
 			.slice(0, 80)
 	);
+
+	const selectedPlatforms = $derived(
+		resolvePlatforms({ platform: values.platform, platforms: values.platforms })
+	);
+
+	function togglePlatform(id: (typeof selectedPlatforms)[number]) {
+		const next = selectedPlatforms.includes(id)
+			? selectedPlatforms.filter((item) => item !== id)
+			: [...selectedPlatforms, id];
+		values.platforms = next;
+		values.platform = primaryPlatform(next);
+	}
 
 	const publicPath = $derived(slugPreview ? `/apps/${slugPreview}` : '/apps/…');
 	const privacyPath = $derived(`${publicPath}/privacy`);
@@ -266,18 +300,40 @@
 			<p class="mt-1.5 text-xs leading-relaxed text-muted">The longer copy on the app page.</p>
 		</div>
 
-		<div class="grid gap-5 sm:grid-cols-2">
-			<div>
-				<label for="platform" class="mb-1.5 block text-sm">Platform</label>
-				<select id="platform" name="platform" bind:value={values.platform} class={field}>
-					{#each platforms as platform}
-						<option value={platform.value}>{platform.label}</option>
-					{/each}
-				</select>
-				<p class="mt-1.5 text-xs leading-relaxed text-muted">
-					{platforms.find((item) => item.value === values.platform)?.hint ?? 'Where it runs.'}
-				</p>
+		<div>
+			<p class="mb-1.5 text-sm">Platforms</p>
+			<p class="mb-3 text-xs leading-relaxed text-muted">
+				Check every place this app actually runs. Apple TV is tvOS. Apple Watch is watchOS.
+			</p>
+			<input type="hidden" name="platform" value={values.platform ?? 'ios'} />
+			<div class="grid gap-5 sm:grid-cols-2">
+				{#each platformGroups as group}
+					<fieldset class="border border-rule px-3 py-3">
+						<legend class="px-1 text-xs uppercase tracking-wide text-muted">{group.name}</legend>
+						<div class="mt-1 space-y-2">
+							{#each group.items as item}
+								<label class="flex items-start gap-2 text-sm">
+									<input
+										type="checkbox"
+										name="platforms"
+										value={item.id}
+										checked={selectedPlatforms.includes(item.id)}
+										onchange={() => togglePlatform(item.id)}
+										class="mt-0.5 rounded-none border-rule"
+									/>
+									<span>
+										<span class="block">{item.label}</span>
+										<span class="block text-xs text-muted">{item.hint}</span>
+									</span>
+								</label>
+							{/each}
+						</div>
+					</fieldset>
+				{/each}
 			</div>
+		</div>
+
+		<div class="grid gap-5 sm:grid-cols-2">
 			<div>
 				<label for="category" class="mb-1.5 block text-sm">Store category <span class="text-muted">(optional)</span></label>
 				<input
@@ -285,8 +341,14 @@
 					name="category"
 					bind:value={values.category}
 					placeholder="Productivity"
+					list="store-categories"
 					class={field}
 				/>
+				<datalist id="store-categories">
+					{#each storeCategories as category}
+						<option value={category}></option>
+					{/each}
+				</datalist>
 				<p class="mt-1.5 text-xs leading-relaxed text-muted">Same label Apple or Google use, if you have one.</p>
 			</div>
 			<div>
@@ -395,7 +457,10 @@
 				placeholder="https://apps.apple.com/…"
 				class={field}
 			/>
-			<p class="mt-1.5 text-xs leading-relaxed text-muted">The public iOS / Mac listing. Not App Store Connect.</p>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">
+				Apple’s public listing — iPhone, iPad, Mac, Apple TV, Watch, or Vision. Not App Store
+				Connect.
+			</p>
 		</div>
 		<div>
 			<label for="playStoreUrl" class="mb-1.5 block text-sm">Play Store URL <span class="text-muted">(optional)</span></label>

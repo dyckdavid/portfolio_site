@@ -7,12 +7,13 @@ import {
 	timestamp,
 	uuid
 } from 'drizzle-orm/pg-core';
+import { appPlatform } from '$lib/platforms';
 
 export const portfolio = pgSchema('portfolio');
 
 export const projectStatus = ['draft', 'in-progress', 'shipped', 'archived'] as const;
 export const appStatus = ['development', 'in-review', 'live', 'sunset'] as const;
-export const appPlatform = ['ios', 'android', 'macos', 'web', 'multi'] as const;
+export { appPlatform };
 
 export type DataTypeEntry = {
 	category: string;
@@ -51,6 +52,7 @@ export const apps = portfolio.table('apps', {
 	tagline: text('tagline'),
 	description: text('description'),
 	platform: text('platform').notNull().default('ios'),
+	platforms: text('platforms').array().notNull().default([]),
 	category: text('category'),
 	bundleId: text('bundle_id'),
 	appStoreUrl: text('app_store_url'),

@@ -5,6 +5,7 @@
 	"tagline": "Forward support mail to one place.",
 	"description": "A sample app that does collect a little data, so you can see the privacy rows fill in. People sign in with email. Crash reports go to a diagnostics service. Nothing is used for ads.",
 	"platform": "ios",
+	"platforms": ["ios", "ipados", "macos"],
 	"category": "Productivity",
 	"bundleId": "com.example.inboxrelay",
 	"appStoreUrl": "",

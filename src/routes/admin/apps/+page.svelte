@@ -1,13 +1,7 @@
 <script lang="ts">
-	let { data, form } = $props();
+	import { formatPlatforms } from '$lib/platforms';
 
-	const platformLabel: Record<string, string> = {
-		ios: 'iOS',
-		android: 'Android',
-		macos: 'macOS',
-		web: 'Web',
-		multi: 'Multi'
-	};
+	let { data, form } = $props();
 
 	const statusLabel: Record<string, string> = {
 		development: 'Development',
@@ -59,7 +53,7 @@
 				{#each data.apps as app (app.id)}
 					<tr class="border-b border-rule">
 						<td class="py-3 pr-4">{app.name}</td>
-						<td class="py-3 pr-4">{platformLabel[app.platform] ?? app.platform}</td>
+						<td class="py-3 pr-4">{formatPlatforms(app)}</td>
 						<td class="py-3 pr-4">{statusLabel[app.status] ?? app.status}</td>
 						<td class="py-3 pr-4">{app.published ? 'Yes' : 'No'}</td>
 						<td class="py-3 pr-4">{app.featured ? 'Yes' : 'No'}</td>

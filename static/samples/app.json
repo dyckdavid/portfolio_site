@@ -5,6 +5,7 @@
 	"tagline": "A one-task timer. No account.",
 	"description": "Quiet Timer is a sample iOS app you can import to see how this form fills. It keeps a single countdown on the device. There is no account, no cloud, and no analytics.",
 	"platform": "ios",
+	"platforms": ["ios"],
 	"category": "Productivity",
 	"bundleId": "com.example.quiettimer",
 	"appStoreUrl": "",

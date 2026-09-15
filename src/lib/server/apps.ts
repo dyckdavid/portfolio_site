@@ -1,13 +1,8 @@
 import { eq } from 'drizzle-orm';
 import { getDb } from '$lib/server/db';
-import {
-	appPlatform,
-	appStatus,
-	apps,
-	type App,
-	type DataTypeEntry
-} from '$lib/server/db/schema';
+import { appStatus, apps, type App, type DataTypeEntry } from '$lib/server/db/schema';
 import { slugify } from '$lib/server/slug';
+import { primaryPlatform, resolvePlatforms, type AppPlatformId } from '$lib/platforms';
 
 export type AppFormValues = {
 	name: string;
@@ -15,6 +10,7 @@ export type AppFormValues = {
 	tagline: string;
 	description: string;
 	platform: string;
+	platforms: string[];
 	category: string;
 	bundleId: string;
 	appStoreUrl: string;
@@ -42,7 +38,8 @@ export type AppRecord = {
 	slug: string;
 	tagline: string | null;
 	description: string | null;
-	platform: (typeof appPlatform)[number];
+	platform: AppPlatformId;
+	platforms: AppPlatformId[];
 	category: string | null;
 	bundleId: string | null;
 	appStoreUrl: string | null;
@@ -71,6 +68,7 @@ const emptyValues: AppFormValues = {
 	tagline: '',
 	description: '',
 	platform: 'ios',
+	platforms: ['ios'],
 	category: '',
 	bundleId: '',
 	appStoreUrl: '',
@@ -170,7 +168,8 @@ export function toFormValues(app: App): AppFormValues {
 		slug: app.slug,
 		tagline: app.tagline ?? '',
 		description: app.description ?? '',
-		platform: app.platform,
+		platform: resolvePlatforms(app)[0] ?? app.platform ?? 'ios',
+		platforms: resolvePlatforms(app),
 		category: app.category ?? '',
 		bundleId: app.bundleId ?? '',
 		appStoreUrl: app.appStoreUrl ?? '',
@@ -194,10 +193,6 @@ export function toFormValues(app: App): AppFormValues {
 	};
 }
 
-function isPlatform(value: string): value is (typeof appPlatform)[number] {
-	return (appPlatform as readonly string[]).includes(value);
-}
-
 function isStatus(value: string): value is (typeof appStatus)[number] {
 	return (appStatus as readonly string[]).includes(value);
 }
@@ -212,6 +207,11 @@ export async function parseAppForm(
 		tagline: str(form, 'tagline'),
 		description: str(form, 'description'),
 		platform: str(form, 'platform') || 'ios',
+		platforms: form
+			.getAll('platforms')
+			.map(String)
+			.map((item) => item.trim())
+			.filter(Boolean),
 		category: str(form, 'category'),
 		bundleId: str(form, 'bundleId'),
 		appStoreUrl: str(form, 'appStoreUrl'),
@@ -238,9 +238,16 @@ export async function parseAppForm(
 		return { values, error: 'Name is required.' };
 	}
 
-	if (!isPlatform(values.platform)) {
-		return { values, error: 'Pick a valid platform.' };
+	const selected = resolvePlatforms({
+		platform: values.platform,
+		platforms: values.platforms
+	});
+	if (!selected.length) {
+		return { values, error: 'Pick at least one platform.' };
 	}
+	values.platforms = selected;
+	values.platform = primaryPlatform(selected);
+
 	if (!isStatus(values.status)) {
 		return { values, error: 'Pick a valid status.' };
 	}
@@ -281,7 +288,8 @@ export async function parseAppForm(
 		slug,
 		tagline: nullIfEmpty(values.tagline),
 		description: nullIfEmpty(values.description),
-		platform: values.platform,
+		platform: primaryPlatform(selected),
+		platforms: selected,
 		category: nullIfEmpty(values.category),
 		bundleId: nullIfEmpty(values.bundleId),
 		appStoreUrl: nullIfEmpty(values.appStoreUrl),
