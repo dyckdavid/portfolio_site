@@ -58,14 +58,14 @@
 			</div>
 		{/if}
 
-		{#if app.appStoreUrl || app.playStoreUrl || app.website || app.supportUrl}
+		{#if app.appStoreUrl || app.playStoreUrl || app.website}
 			<p class="mt-10 text-sm">
 				{#if app.appStoreUrl}
 					<a href={app.appStoreUrl} target="_blank" rel="noopener noreferrer" class="text-link">
 						App Store
 					</a>
 				{/if}
-				{#if app.appStoreUrl && (app.playStoreUrl || app.website || app.supportUrl)}
+				{#if app.appStoreUrl && (app.playStoreUrl || app.website)}
 					<span class="mx-2 text-muted">/</span>
 				{/if}
 				{#if app.playStoreUrl}
@@ -73,26 +73,22 @@
 						Play Store
 					</a>
 				{/if}
-				{#if app.playStoreUrl && (app.website || app.supportUrl)}
+				{#if app.playStoreUrl && app.website}
 					<span class="mx-2 text-muted">/</span>
 				{/if}
 				{#if app.website}
 					<a href={app.website} target="_blank" rel="noopener noreferrer" class="text-link">Website</a>
 				{/if}
-				{#if app.website && app.supportUrl}
-					<span class="mx-2 text-muted">/</span>
-				{/if}
-				{#if app.supportUrl}
-					<a href={app.supportUrl} target="_blank" rel="noopener noreferrer" class="text-link">Support</a>
-				{/if}
 			</p>
 		{/if}
 
-		<p class="mt-12">
+		<div class="mt-12 flex flex-wrap gap-3">
+			<a href="/apps/{app.slug}/support" class="btn-primary">Support</a>
 			<a href="/apps/{app.slug}/privacy" class="btn-primary">Privacy policy</a>
-		</p>
+		</div>
 		<p class="mt-3 max-w-prose text-sm text-muted">
-			The privacy policy for this app — what it collects, and how to reach me about it.
+			Support covers getting started and common questions. The privacy policy explains what the app
+			collects, and how to reach me about it.
 		</p>
 	</div>
 </section>

@@ -67,6 +67,9 @@ const appSchema = {
 		'website',
 		'iconUrl',
 		'supportUrl',
+		'supportContactEmail',
+		'supportIntro',
+		'supportBody',
 		'status',
 		'featured',
 		'published',
@@ -98,6 +101,9 @@ const appSchema = {
 		website: { type: 'string' },
 		iconUrl: { type: 'string' },
 		supportUrl: { type: 'string' },
+		supportContactEmail: { type: 'string' },
+		supportIntro: { type: 'string' },
+		supportBody: { type: 'string' },
 		status: { type: 'string', enum: [...appStatus] },
 		featured: { type: 'boolean' },
 		published: { type: 'boolean' },
@@ -204,7 +210,7 @@ export async function draftApp(prompt: string): Promise<AppFormValues> {
 	const raw = await xaiJson<AppRaw>({
 		system: `${voice}
 
-Fill an App Store listing and privacy page. Write privacyIntro as a short policy in first person (or "this app") that App Store Connect can link to. If the prompt does not mention data collection, assume the app collects nothing, tracking is no, identity linking is no, dataTypes is empty, and say so clearly. If it does collect data, list only the types mentioned, using Apple-style categories (Contact Info, Location, Identifiers, Usage Data, Diagnostics, etc.). childrenPolicy should say the app is not directed at children unless the prompt says otherwise. privacyLastUpdated is today's date (${today}) as YYYY-MM-DD. privacyContactEmail only if given. Leave store URLs, bundle IDs, and icon URLs empty unless provided. platforms is an array of where it runs: ios, ipados, macos, watchos, tvos, visionos, android, android-tv, wearos, android-auto, windows, xbox, linux, web, steam, meta-quest, amazon-fire. platform is the first of those. status is development, in-review, live, or sunset.`,
+Fill an App Store listing, support page, and privacy page. Write privacyIntro as a short policy in first person (or "this app") that App Store Connect can link to. Write supportIntro as one short paragraph about what the app is. Write supportBody with ## section headings (Getting started, and other topics the prompt names). Link the privacy page as [Privacy Policy](/apps/{slug}/privacy) in a Privacy section when relevant. If the prompt does not mention data collection, assume the app collects nothing, tracking is no, identity linking is no, dataTypes is empty, and say so clearly. If it does collect data, list only the types mentioned, using Apple-style categories (Contact Info, Location, Identifiers, Usage Data, Diagnostics, etc.). childrenPolicy should say the app is not directed at children unless the prompt says otherwise. privacyLastUpdated is today's date (${today}) as YYYY-MM-DD. privacyContactEmail and supportContactEmail only if given — never invent an email. Leave store URLs, bundle IDs, and icon URLs empty unless provided. platforms is an array of where it runs: ios, ipados, macos, watchos, tvos, visionos, android, android-tv, wearos, android-auto, windows, xbox, linux, web, steam, meta-quest, amazon-fire. platform is the first of those. status is development, in-review, live, or sunset.`,
 		user: prompt,
 		schemaName: 'app_draft',
 		schema: appSchema
@@ -212,10 +218,11 @@ Fill an App Store listing and privacy page. Write privacyIntro as a short policy
 
 	const types = Array.isArray(raw.dataTypes) ? raw.dataTypes : [];
 	const collects = Boolean(raw.collectsData) || types.length > 0;
+	const slug = slugify(raw.slug || raw.name);
 
 	return {
 		name: raw.name.trim(),
-		slug: slugify(raw.slug || raw.name),
+		slug,
 		tagline: raw.tagline.trim(),
 		description: raw.description.trim(),
 		platform: primaryPlatform(
@@ -235,6 +242,9 @@ Fill an App Store listing and privacy page. Write privacyIntro as a short policy
 		website: cleanUrl(raw.website),
 		iconUrl: cleanUrl(raw.iconUrl),
 		supportUrl: cleanUrl(raw.supportUrl),
+		supportContactEmail: raw.supportContactEmail.trim(),
+		supportIntro: raw.supportIntro.trim(),
+		supportBody: raw.supportBody.trim(),
 		status: appStatus.includes(raw.status as (typeof appStatus)[number])
 			? raw.status
 			: 'development',

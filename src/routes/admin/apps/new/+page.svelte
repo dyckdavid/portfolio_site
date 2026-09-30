@@ -25,7 +25,7 @@
 </p>
 <h1 class="mt-2 font-serif text-3xl tracking-tight">New app</h1>
 <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-	Upload a JSON file, draft with Grok, or fill the four steps by hand. Name is the only required
+	Upload a JSON file, draft with Grok, or fill the five steps by hand. Name is the only required
 	field. Empty is fine everywhere else.
 </p>
 

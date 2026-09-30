@@ -18,6 +18,9 @@ export type AppFormValues = {
 	website: string;
 	iconUrl: string;
 	supportUrl: string;
+	supportContactEmail: string;
+	supportIntro: string;
+	supportBody: string;
 	status: string;
 	featured: boolean;
 	published: boolean;
@@ -47,6 +50,9 @@ export type AppRecord = {
 	website: string | null;
 	iconUrl: string | null;
 	supportUrl: string | null;
+	supportContactEmail: string | null;
+	supportIntro: string | null;
+	supportBody: string | null;
 	status: (typeof appStatus)[number];
 	featured: boolean;
 	published: boolean;
@@ -76,6 +82,9 @@ const emptyValues: AppFormValues = {
 	website: '',
 	iconUrl: '',
 	supportUrl: '',
+	supportContactEmail: '',
+	supportIntro: '',
+	supportBody: '',
 	status: 'development',
 	featured: false,
 	published: true,
@@ -177,6 +186,9 @@ export function toFormValues(app: App): AppFormValues {
 		website: app.website ?? '',
 		iconUrl: app.iconUrl ?? '',
 		supportUrl: app.supportUrl ?? '',
+		supportContactEmail: app.supportContactEmail ?? '',
+		supportIntro: app.supportIntro ?? '',
+		supportBody: app.supportBody ?? '',
 		status: app.status,
 		featured: app.featured,
 		published: app.published,
@@ -219,6 +231,9 @@ export async function parseAppForm(
 		website: str(form, 'website'),
 		iconUrl: str(form, 'iconUrl'),
 		supportUrl: str(form, 'supportUrl'),
+		supportContactEmail: str(form, 'supportContactEmail'),
+		supportIntro: str(form, 'supportIntro'),
+		supportBody: str(form, 'supportBody'),
 		status: str(form, 'status') || 'development',
 		featured: checked(form, 'featured'),
 		published: checked(form, 'published'),
@@ -297,6 +312,9 @@ export async function parseAppForm(
 		website: nullIfEmpty(values.website),
 		iconUrl: nullIfEmpty(values.iconUrl),
 		supportUrl: nullIfEmpty(values.supportUrl),
+		supportContactEmail: nullIfEmpty(values.supportContactEmail),
+		supportIntro: nullIfEmpty(values.supportIntro),
+		supportBody: nullIfEmpty(values.supportBody),
 		status: values.status,
 		featured: values.featured,
 		published: values.published,
