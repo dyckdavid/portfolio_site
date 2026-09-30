@@ -15,6 +15,9 @@
 		website?: string;
 		iconUrl?: string;
 		supportUrl?: string;
+		supportContactEmail?: string;
+		supportIntro?: string;
+		supportBody?: string;
 		status?: string;
 		featured: boolean;
 		published: boolean;
@@ -43,6 +46,7 @@
 		error,
 		submitLabel = 'Save',
 		privacyUrl = '',
+		supportUrlPublic = '',
 		cancelHref = '/admin/apps',
 		action = ''
 	}: {
@@ -50,6 +54,7 @@
 		error?: string;
 		submitLabel?: string;
 		privacyUrl?: string;
+		supportUrlPublic?: string;
 		cancelHref?: string;
 		action?: string;
 	} = $props();
@@ -133,8 +138,10 @@
 
 	const publicPath = $derived(slugPreview ? `/apps/${slugPreview}` : '/apps/…');
 	const privacyPath = $derived(`${publicPath}/privacy`);
+	const supportPath = $derived(`${publicPath}/support`);
 
-	let copied = $state(false);
+	let copiedPrivacy = $state(false);
+	let copiedSupport = $state(false);
 
 	function parseRows(raw: string): DataRow[] {
 		return raw
@@ -207,36 +214,52 @@
 		syncRows(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
 	}
 
-	async function copyPrivacy() {
-		const path = privacyUrl || privacyPath;
+	async function copyPath(path: string, which: 'privacy' | 'support') {
 		try {
 			await navigator.clipboard.writeText(
 				path.startsWith('http') ? path : `${window.location.origin}${path}`
 			);
-			copied = true;
-			setTimeout(() => {
-				copied = false;
-			}, 2000);
+			if (which === 'privacy') {
+				copiedPrivacy = true;
+				setTimeout(() => {
+					copiedPrivacy = false;
+				}, 2000);
+			} else {
+				copiedSupport = true;
+				setTimeout(() => {
+					copiedSupport = false;
+				}, 2000);
+			}
 		} catch {
-			copied = false;
+			if (which === 'privacy') copiedPrivacy = false;
+			else copiedSupport = false;
 		}
+	}
+
+	async function copyPrivacy() {
+		await copyPath(privacyUrl || privacyPath, 'privacy');
+	}
+
+	async function copySupport() {
+		await copyPath(supportUrlPublic || supportPath, 'support');
 	}
 </script>
 
 <nav class="mt-8 mb-10 max-w-3xl border border-rule bg-surface px-5 py-4 text-sm" aria-label="Form steps">
-	<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Four steps</p>
+	<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Five steps</p>
 	<ol class="mt-3 grid gap-2 sm:grid-cols-2">
 		<li><a href="#step-listing" class="text-link">1. Listing</a> — name and what it does</li>
 		<li><a href="#step-visibility" class="text-link">2. Visibility</a> — site and store status</li>
 		<li><a href="#step-links" class="text-link">3. Links</a> — stores, site, icon</li>
-		<li><a href="#step-privacy" class="text-link">4. Privacy</a> — the App Store page</li>
+		<li><a href="#step-support" class="text-link">4. Support</a> — the App Store support page</li>
+		<li><a href="#step-privacy" class="text-link">5. Privacy</a> — the App Store privacy page</li>
 	</ol>
 </nav>
 
 <form method="POST" {action} class="max-w-3xl space-y-14">
 	<section id="step-listing" class="scroll-mt-6 space-y-5">
 		<header class="border-b border-rule pb-4">
-			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 1 of 4</p>
+			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 1 of 5</p>
 			<h2 class="mt-1 font-serif text-2xl tracking-tight">Listing</h2>
 			<p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">
 				This is the public card on <span class="font-mono">/apps</span> and the app’s own page.
@@ -265,6 +288,12 @@
 					<a href={publicPath} class="font-mono text-link">{publicPath}</a>.
 				{:else}
 					<code class="font-mono">{publicPath}</code>.
+				{/if}
+				Support page will be
+				{#if slugPreview}
+					<a href={supportPath} class="font-mono text-link">{supportPath}</a>.
+				{:else}
+					<code class="font-mono">{supportPath}</code>.
 				{/if}
 				Privacy page will be
 				{#if slugPreview}
@@ -367,7 +396,7 @@
 
 	<section id="step-visibility" class="scroll-mt-6 space-y-5">
 		<header class="border-b border-rule pb-4">
-			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 2 of 4</p>
+			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 2 of 5</p>
 			<h2 class="mt-1 font-serif text-2xl tracking-tight">Visibility</h2>
 			<p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">
 				Controls whether this listing is on the public site. Separate from whether the store listing
@@ -415,7 +444,7 @@
 				<span>
 					<span class="block">Show on the public site</span>
 					<span class="mt-1 block text-xs leading-relaxed text-muted">
-						Off = draft. The listing and privacy URL stay hidden until this is on.
+						Off = draft. The listing, support URL, and privacy URL stay hidden until this is on.
 					</span>
 				</span>
 			</label>
@@ -440,7 +469,7 @@
 
 	<section id="step-links" class="scroll-mt-6 space-y-5">
 		<header class="border-b border-rule pb-4">
-			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 3 of 4</p>
+			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 3 of 5</p>
 			<h2 class="mt-1 font-serif text-2xl tracking-tight">Links</h2>
 			<p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">
 				Leave a field blank if you do not have it. Empty is better than a guess.
@@ -484,22 +513,98 @@
 			<p class="mt-1.5 text-xs leading-relaxed text-muted">Direct link to a square PNG or JPEG. Not a local file upload.</p>
 		</div>
 		<div>
-			<label for="supportUrl" class="mb-1.5 block text-sm">Support URL <span class="text-muted">(optional)</span></label>
+			<label for="supportUrl" class="mb-1.5 block text-sm">External support URL <span class="text-muted">(optional)</span></label>
 			<input
 				id="supportUrl"
 				name="supportUrl"
 				type="url"
 				bind:value={values.supportUrl}
-				placeholder="https://yoursite.com/contact"
+				placeholder="Leave blank to use the on-site support page"
 				class={field}
 			/>
-			<p class="mt-1.5 text-xs leading-relaxed text-muted">Where users go for help. Can be your contact page.</p>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">
+				Only if help lives somewhere else. For App Store Connect, prefer the on-site support URL in
+				step 4.
+			</p>
+		</div>
+	</section>
+
+	<section id="step-support" class="scroll-mt-6 space-y-5">
+		<header class="border-b border-rule pb-4">
+			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 4 of 5</p>
+			<h2 class="mt-1 font-serif text-2xl tracking-tight">Support</h2>
+			<p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+				This writes the public support page App Store Connect asks for. Use
+				<code class="font-mono text-xs">## Heading</code> lines in the body for sections. Inline
+				links use <code class="font-mono text-xs">[label](/path)</code>.
+			</p>
+		</header>
+
+		<div class="border border-rule bg-surface px-4 py-4">
+			<p class="text-sm">Support URL to paste into App Store Connect</p>
+			<p class="mt-2 break-all font-mono text-sm">{supportUrlPublic || supportPath}</p>
+			<div class="mt-3 flex flex-wrap gap-3">
+				<button type="button" class="text-sm text-link" onclick={copySupport}>
+					{copiedSupport ? 'Copied' : 'Copy URL'}
+				</button>
+				{#if slugPreview}
+					<a href={supportPath} class="text-sm text-link">Open support page</a>
+				{/if}
+			</div>
+			{#if !values.published}
+				<p class="mt-3 text-xs leading-relaxed text-muted">
+					“Show on the public site” is off, so /apps will not list this yet. The links still work
+					for you while you are signed in.
+				</p>
+			{/if}
+		</div>
+
+		<div>
+			<label for="supportContactEmail" class="mb-1.5 block text-sm">Support contact email <span class="text-muted">(optional)</span></label>
+			<input
+				id="supportContactEmail"
+				name="supportContactEmail"
+				bind:value={values.supportContactEmail}
+				placeholder="[YOUR SUPPORT EMAIL HERE]"
+				class={field}
+			/>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">
+				Shown at the top of the support page. A real address becomes a mailto link; placeholders stay
+				plain text.
+			</p>
+		</div>
+
+		<div>
+			<label for="supportIntro" class="mb-1.5 block text-sm">Support opening <span class="text-muted">(optional)</span></label>
+			<textarea
+				id="supportIntro"
+				name="supportIntro"
+				rows="3"
+				class={field}
+				bind:value={values.supportIntro}
+				placeholder="One short paragraph: what the app is, and where data lives."
+			></textarea>
+		</div>
+
+		<div>
+			<label for="supportBody" class="mb-1.5 block text-sm">Support body <span class="text-muted">(optional)</span></label>
+			<textarea
+				id="supportBody"
+				name="supportBody"
+				rows="14"
+				class={field}
+				bind:value={values.supportBody}
+				placeholder={'## Getting started\nHow to begin.\n\n## Privacy\nSee the [Privacy Policy](/apps/slug/privacy).'}
+			></textarea>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">
+				Sections start with <code class="font-mono text-xs">##</code>. Blank lines make paragraphs.
+			</p>
 		</div>
 	</section>
 
 	<section id="step-privacy" class="scroll-mt-6 space-y-5">
 		<header class="border-b border-rule pb-4">
-			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 4 of 4</p>
+			<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Step 5 of 5</p>
 			<h2 class="mt-1 font-serif text-2xl tracking-tight">Privacy</h2>
 			<p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">
 				This writes the public page App Store Connect asks for. Publish the app (step 2), then paste
@@ -512,7 +617,7 @@
 			<p class="mt-2 break-all font-mono text-sm">{privacyUrl || privacyPath}</p>
 			<div class="mt-3 flex flex-wrap gap-3">
 				<button type="button" class="text-sm text-link" onclick={copyPrivacy}>
-					{copied ? 'Copied' : 'Copy URL'}
+					{copiedPrivacy ? 'Copied' : 'Copy URL'}
 				</button>
 				{#if slugPreview}
 					<a href={publicPath} class="text-sm text-link">Open app page</a>
@@ -759,7 +864,7 @@
 			Cancel
 		</a>
 		<p class="w-full text-xs leading-relaxed text-muted sm:w-auto">
-			Saving writes the listing. Apple only sees the privacy URL after the app is published.
+			Saving writes the listing. Apple only sees the support and privacy URLs after the app is published.
 		</p>
 	</div>
 </form>

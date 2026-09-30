@@ -14,6 +14,9 @@ export type AppImportValues = {
 	website: string;
 	iconUrl: string;
 	supportUrl: string;
+	supportContactEmail: string;
+	supportIntro: string;
+	supportBody: string;
 	status: string;
 	featured: boolean;
 	published: boolean;
@@ -129,6 +132,9 @@ export function parseAppImportJson(rawText: string): { values: AppImportValues }
 			website: text(raw.website),
 			iconUrl: text(raw.iconUrl),
 			supportUrl: text(raw.supportUrl),
+			supportContactEmail: text(raw.supportContactEmail),
+			supportIntro: text(raw.supportIntro),
+			supportBody: text(raw.supportBody),
 			status,
 			featured: bool(raw.featured),
 			published: raw.published === undefined ? true : bool(raw.published, true),

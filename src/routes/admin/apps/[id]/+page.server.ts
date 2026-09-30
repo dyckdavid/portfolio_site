@@ -37,7 +37,8 @@ export const actions: Actions = {
 			return {
 				saved: true,
 				values: toFormValues(updated),
-				privacyUrl: `/apps/${updated.slug}/privacy`
+				privacyUrl: `/apps/${updated.slug}/privacy`,
+				supportUrlPublic: `/apps/${updated.slug}/support`
 			};
 		} catch (err) {
 			if (uniqueViolation(err)) {
