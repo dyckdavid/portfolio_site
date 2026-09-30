@@ -173,6 +173,10 @@
 
 	let rows = $state<DataRow[]>(parseRows(values.dataTypesText ?? ''));
 
+	const showDataTypesEditor = $derived(
+		values.collectsData || rows.length > 0 || Boolean((values.dataTypesText ?? '').trim())
+	);
+
 	$effect(() => {
 		const incoming = values.dataTypesText ?? '';
 		if (incoming !== formatRows(rows)) {
@@ -729,7 +733,7 @@
 			{/if}
 		</div>
 
-		{#if values.collectsData}
+		{#if showDataTypesEditor}
 			<div class="space-y-3">
 				<div>
 					<p class="text-sm">Data types</p>
@@ -737,6 +741,12 @@
 						One row per category Apple lists. “Types” is the specific item (email, crash logs).
 						“Purpose” is why (app functionality, analytics).
 					</p>
+					{#if !values.collectsData && rows.length > 0}
+						<p class="mt-1.5 text-xs leading-relaxed text-muted">
+							These rows are optional on-device or payments disclosures for the public privacy
+							page. They do not claim that this app collects data from users.
+						</p>
+					{/if}
 				</div>
 
 				{#if rows.length === 0}
