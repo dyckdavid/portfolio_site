@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import DownloadBlock from '$lib/components/DownloadBlock.svelte';
+	import Markdown from '$lib/components/Markdown.svelte';
 	import { formatPlatforms } from '$lib/platforms';
 
 	let { data } = $props();
@@ -50,12 +52,28 @@
 					<dd>{app.category}</dd>
 				</div>
 			{/if}
+			{#if app.version}
+				<div class="flex gap-6 border-b border-rule py-3.5">
+					<dt class="w-24 shrink-0 text-sm text-muted">Version</dt>
+					<dd class="font-mono text-sm">{app.version}</dd>
+				</div>
+			{/if}
 		</dl>
 
-		{#if app.description}
-			<div class="mt-10 max-w-2xl whitespace-pre-wrap text-[1.05rem] leading-[1.75]">
-				{app.description}
+		{#if data.descriptionHtml}
+			<div class="mt-10 max-w-2xl text-[1.05rem] leading-[1.75]">
+				<Markdown html={data.descriptionHtml} />
 			</div>
+		{/if}
+
+		{#if app.downloadUrl}
+			<DownloadBlock
+				downloadUrl={app.downloadUrl}
+				sha256={app.sha256}
+				version={app.version}
+				fileSize={app.fileSize}
+				requirements={app.requirements}
+			/>
 		{/if}
 
 		{#if app.appStoreUrl || app.playStoreUrl || app.website}
@@ -80,6 +98,35 @@
 					<a href={app.website} target="_blank" rel="noopener noreferrer" class="text-link">Website</a>
 				{/if}
 			</p>
+		{/if}
+
+		{#if data.latestRelease}
+			<section class="mt-14 max-w-2xl border-t border-rule pt-10">
+				<div class="flex flex-wrap items-baseline justify-between gap-3">
+					<h2 class="font-serif text-2xl tracking-tight">What’s new</h2>
+					{#if data.releaseCount > 1}
+						<a href="/apps/{app.slug}/releases" class="text-sm text-link">All releases</a>
+					{/if}
+				</div>
+				<p class="mt-3 font-mono text-sm text-muted">
+					<span class="rounded-sm bg-surface px-2 py-0.5 text-ink">Latest</span>
+					<span class="ml-2">v{data.latestRelease.version}</span>
+					{#if data.latestRelease.releaseDateLabel}
+						<span class="mx-2">·</span>
+						<span>{data.latestRelease.releaseDateLabel}</span>
+					{/if}
+				</p>
+				{#if data.latestRelease.notesHtml}
+					<div class="mt-4">
+						<Markdown html={data.latestRelease.notesHtml} />
+					</div>
+				{/if}
+				{#if data.releaseCount === 1}
+					<p class="mt-4 text-sm">
+						<a href="/apps/{app.slug}/releases" class="text-link">Release history</a>
+					</p>
+				{/if}
+			</section>
 		{/if}
 
 		<div class="mt-12 flex flex-wrap gap-3">
