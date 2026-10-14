@@ -18,23 +18,30 @@ function formatDate(value: Date | string | null) {
 }
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	const app = await getAppBySlug(params.slug);
-	if (!app) error(404, 'Not found');
-	if (!app.published && !locals.admin) error(404, 'Not found');
+	try {
+		const app = await getAppBySlug(params.slug);
+		if (!app) error(404, 'Not found');
+		if (!app.published && !locals.admin) error(404, 'Not found');
 
-	const customHtml = app.customPrivacyOnly
-		? renderMarkdown(app.privacyBody || app.privacyIntro)
-		: renderMarkdown(app.privacyIntro);
-	const thirdPartiesHtml = renderMarkdown(app.thirdParties);
-	const childrenHtml = renderMarkdown(app.childrenPolicy);
+		const customHtml = app.customPrivacyOnly
+			? renderMarkdown(app.privacyBody || app.privacyIntro)
+			: renderMarkdown(app.privacyIntro);
+		const thirdPartiesHtml = renderMarkdown(app.thirdParties);
+		const childrenHtml = renderMarkdown(app.childrenPolicy);
 
-	return {
-		app,
-		preview: !app.published,
-		lastUpdated: formatDate(app.privacyLastUpdated),
-		customPrivacyOnly: app.customPrivacyOnly,
-		customHtml,
-		thirdPartiesHtml,
-		childrenHtml
-	};
+		return {
+			app,
+			preview: !app.published,
+			lastUpdated: formatDate(app.privacyLastUpdated),
+			customPrivacyOnly: app.customPrivacyOnly,
+			customHtml,
+			thirdPartiesHtml,
+			childrenHtml
+		};
+	} catch (err) {
+		if (err && typeof err === 'object' && 'status' in err) throw err;
+		const message = err instanceof Error ? err.message : String(err);
+		console.error('apps/[slug]/privacy load failed', err);
+		error(500, message);
+	}
 };
