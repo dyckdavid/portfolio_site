@@ -23,7 +23,6 @@
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
-		"@types/sanitize-html": "^2.16.2",
 		"autoprefixer": "^10.4.20",
 		"dotenv": "^17.4.2",
 		"drizzle-kit": "^0.31.10",
@@ -43,7 +42,6 @@
 		"drizzle-orm": "^0.45.2",
 		"firebase": "^11.0.1",
 		"marked": "^18.1.1",
-		"postgres": "^3.4.9",
-		"sanitize-html": "^2.18.1"
+		"postgres": "^3.4.9"
 	}
 }
