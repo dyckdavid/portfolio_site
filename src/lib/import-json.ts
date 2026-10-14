@@ -17,13 +17,20 @@ export type AppImportValues = {
 	supportContactEmail: string;
 	supportIntro: string;
 	supportBody: string;
+	downloadUrl: string;
+	sha256: string;
+	version: string;
+	fileSize: string;
+	requirements: string;
 	status: string;
 	featured: boolean;
 	published: boolean;
 	sortOrder: string;
 	privacyContactEmail: string;
 	privacyIntro: string;
+	privacyBody: string;
 	privacyLastUpdated: string;
+	customPrivacyOnly: boolean;
 	collectsData: boolean;
 	dataUsedForTracking: boolean;
 	dataLinkedToIdentity: boolean;
@@ -135,13 +142,20 @@ export function parseAppImportJson(rawText: string): { values: AppImportValues }
 			supportContactEmail: text(raw.supportContactEmail),
 			supportIntro: text(raw.supportIntro),
 			supportBody: text(raw.supportBody),
+			downloadUrl: text(raw.downloadUrl ?? raw.download_url),
+			sha256: text(raw.sha256),
+			version: text(raw.version),
+			fileSize: text(raw.fileSize ?? raw.file_size),
+			requirements: text(raw.requirements),
 			status,
 			featured: bool(raw.featured),
 			published: raw.published === undefined ? true : bool(raw.published, true),
 			sortOrder: numString(raw.sortOrder, '0'),
 			privacyContactEmail: text(raw.privacyContactEmail),
 			privacyIntro: text(raw.privacyIntro),
+			privacyBody: text(raw.privacyBody ?? raw.privacy_body),
 			privacyLastUpdated: text(raw.privacyLastUpdated).slice(0, 10),
+			customPrivacyOnly: bool(raw.customPrivacyOnly ?? raw.custom_privacy_only),
 			collectsData: bool(raw.collectsData),
 			dataUsedForTracking: bool(raw.dataUsedForTracking),
 			dataLinkedToIdentity: bool(raw.dataLinkedToIdentity),

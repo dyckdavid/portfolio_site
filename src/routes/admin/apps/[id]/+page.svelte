@@ -35,6 +35,7 @@
 <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted">
 	Same five steps as a new app. After you publish, copy the support and privacy URLs into App Store
 	Connect.
+	<a href="/admin/apps/{data.app.id}/releases" class="text-link">Manage release notes</a>.
 </p>
 
 {#if form?.saved}

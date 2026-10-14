@@ -18,13 +18,20 @@
 		supportContactEmail?: string;
 		supportIntro?: string;
 		supportBody?: string;
+		downloadUrl?: string;
+		sha256?: string;
+		version?: string;
+		fileSize?: string;
+		requirements?: string;
 		status?: string;
 		featured: boolean;
 		published: boolean;
 		sortOrder?: string;
 		privacyContactEmail?: string;
 		privacyIntro?: string;
+		privacyBody?: string;
 		privacyLastUpdated?: string;
+		customPrivacyOnly: boolean;
 		collectsData: boolean;
 		dataUsedForTracking: boolean;
 		dataLinkedToIdentity: boolean;
@@ -254,7 +261,7 @@
 	<ol class="mt-3 grid gap-2 sm:grid-cols-2">
 		<li><a href="#step-listing" class="text-link">1. Listing</a> — name and what it does</li>
 		<li><a href="#step-visibility" class="text-link">2. Visibility</a> — site and store status</li>
-		<li><a href="#step-links" class="text-link">3. Links</a> — stores, site, icon</li>
+		<li><a href="#step-links" class="text-link">3. Links</a> — stores, download, icon</li>
 		<li><a href="#step-support" class="text-link">4. Support</a> — the App Store support page</li>
 		<li><a href="#step-privacy" class="text-link">5. Privacy</a> — the App Store privacy page</li>
 	</ol>
@@ -328,9 +335,12 @@
 				rows="5"
 				class={field}
 				bind:value={values.description}
-				placeholder="What the app does, who it is for, and what it does not do."
+				placeholder="What the app does, who it is for, and what it does not do. Markdown is fine."
 			></textarea>
-			<p class="mt-1.5 text-xs leading-relaxed text-muted">The longer copy on the app page.</p>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">
+				The longer copy on the app page. Markdown is rendered (headings, lists, links, inline
+				<code class="font-mono text-xs">`code`</code>, tables).
+			</p>
 		</div>
 
 		<div>
@@ -531,6 +541,64 @@
 				step 4.
 			</p>
 		</div>
+
+		<div class="border-t border-rule pt-5">
+			<p class="text-sm">Direct download</p>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">
+				For apps you ship as a file (DMG, ZIP, installer). Leave blank for App Store–only apps.
+			</p>
+		</div>
+
+		<div>
+			<label for="downloadUrl" class="mb-1.5 block text-sm">Download URL <span class="text-muted">(optional)</span></label>
+			<input
+				id="downloadUrl"
+				name="downloadUrl"
+				type="url"
+				bind:value={values.downloadUrl}
+				placeholder="https://github.com/…/releases/latest"
+				class={field}
+			/>
+		</div>
+		<div class="grid gap-5 sm:grid-cols-2">
+			<div>
+				<label for="version" class="mb-1.5 block text-sm">Version <span class="text-muted">(optional)</span></label>
+				<input id="version" name="version" bind:value={values.version} placeholder="1.4.0" class={field} />
+			</div>
+			<div>
+				<label for="fileSize" class="mb-1.5 block text-sm">File size <span class="text-muted">(optional)</span></label>
+				<input
+					id="fileSize"
+					name="fileSize"
+					bind:value={values.fileSize}
+					placeholder="1.6 MB"
+					class={field}
+				/>
+			</div>
+		</div>
+		<div>
+			<label for="requirements" class="mb-1.5 block text-sm">Requirements <span class="text-muted">(optional)</span></label>
+			<input
+				id="requirements"
+				name="requirements"
+				bind:value={values.requirements}
+				placeholder="macOS 27 or later, Apple silicon"
+				class={field}
+			/>
+		</div>
+		<div>
+			<label for="sha256" class="mb-1.5 block text-sm">SHA-256 checksum <span class="text-muted">(optional)</span></label>
+			<input
+				id="sha256"
+				name="sha256"
+				bind:value={values.sha256}
+				placeholder="64 hex characters"
+				class="{field} font-mono text-sm"
+			/>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">
+				Shown in monospace next to the Download button, with a copy control.
+			</p>
+		</div>
 	</section>
 
 	<section id="step-support" class="scroll-mt-6 space-y-5">
@@ -649,19 +717,6 @@
 		</div>
 
 		<div>
-			<label for="privacyIntro" class="mb-1.5 block text-sm">Policy opening <span class="text-muted">(optional)</span></label>
-			<textarea
-				id="privacyIntro"
-				name="privacyIntro"
-				rows="4"
-				class={field}
-				bind:value={values.privacyIntro}
-				placeholder="A short paragraph: what the app is, and the rule for data."
-			></textarea>
-			<p class="mt-1.5 text-xs leading-relaxed text-muted">First section of the public privacy page. Plain language.</p>
-		</div>
-
-		<div>
 			<label for="privacyLastUpdated" class="mb-1.5 block text-sm">Policy date <span class="text-muted">(optional)</span></label>
 			<input
 				id="privacyLastUpdated"
@@ -671,6 +726,64 @@
 				class={field}
 			/>
 			<p class="mt-1.5 text-xs leading-relaxed text-muted">Change this when the collection story changes, not on every typo.</p>
+		</div>
+
+		<div class="space-y-4 border border-rule bg-surface px-4 py-4">
+			<label class="flex items-start gap-3 text-sm">
+				<input type="hidden" name="customPrivacyOnly" value="false" />
+				<input
+					type="checkbox"
+					name="customPrivacyOnly"
+					value="true"
+					bind:checked={values.customPrivacyOnly}
+					class="mt-0.5 rounded-none border-rule"
+				/>
+				<span>
+					<span class="block">Use a full custom privacy policy</span>
+					<span class="mt-1 block text-xs leading-relaxed text-muted">
+						On = the Markdown body below is the whole page (no auto “data collected / tracking”
+						sections). Off = structured App Store-style sections.
+					</span>
+				</span>
+			</label>
+		</div>
+
+		{#if values.customPrivacyOnly}
+			<div>
+				<label for="privacyBody" class="mb-1.5 block text-sm">Full privacy policy (Markdown)</label>
+				<textarea
+					id="privacyBody"
+					name="privacyBody"
+					rows="18"
+					class={field}
+					bind:value={values.privacyBody}
+					placeholder="Write the complete policy in Markdown. Tables are supported."
+				></textarea>
+				<p class="mt-1.5 text-xs leading-relaxed text-muted">
+					Rendered alone on the privacy page. Use Markdown tables for permission matrices.
+				</p>
+			</div>
+			<input type="hidden" name="privacyIntro" value={values.privacyIntro ?? ''} />
+			<input type="hidden" name="collectsData" value="false" />
+			<input type="hidden" name="dataUsedForTracking" value="false" />
+			<input type="hidden" name="dataLinkedToIdentity" value="false" />
+			<textarea class="hidden" name="dataTypes" bind:value={values.dataTypesText}></textarea>
+			<input type="hidden" name="thirdParties" value={values.thirdParties ?? ''} />
+			<input type="hidden" name="childrenPolicy" value={values.childrenPolicy ?? ''} />
+		{:else}
+			<input type="hidden" name="privacyBody" value={values.privacyBody ?? ''} />
+
+		<div>
+			<label for="privacyIntro" class="mb-1.5 block text-sm">Policy opening <span class="text-muted">(optional)</span></label>
+			<textarea
+				id="privacyIntro"
+				name="privacyIntro"
+				rows="4"
+				class={field}
+				bind:value={values.privacyIntro}
+				placeholder="A short paragraph: what the app is, and the rule for data. Markdown is fine."
+			></textarea>
+			<p class="mt-1.5 text-xs leading-relaxed text-muted">First section of the public privacy page.</p>
 		</div>
 
 		<div class="space-y-4 border border-rule bg-surface px-4 py-4">
@@ -862,6 +975,7 @@
 			></textarea>
 			<p class="mt-1.5 text-xs leading-relaxed text-muted">App Store review looks for this. Keep it literal.</p>
 		</div>
+		{/if}
 	</section>
 
 	{#if error}

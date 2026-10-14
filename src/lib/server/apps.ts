@@ -21,13 +21,20 @@ export type AppFormValues = {
 	supportContactEmail: string;
 	supportIntro: string;
 	supportBody: string;
+	downloadUrl: string;
+	sha256: string;
+	version: string;
+	fileSize: string;
+	requirements: string;
 	status: string;
 	featured: boolean;
 	published: boolean;
 	sortOrder: string;
 	privacyContactEmail: string;
 	privacyIntro: string;
+	privacyBody: string;
 	privacyLastUpdated: string;
+	customPrivacyOnly: boolean;
 	collectsData: boolean;
 	dataUsedForTracking: boolean;
 	dataLinkedToIdentity: boolean;
@@ -53,13 +60,20 @@ export type AppRecord = {
 	supportContactEmail: string | null;
 	supportIntro: string | null;
 	supportBody: string | null;
+	downloadUrl: string | null;
+	sha256: string | null;
+	version: string | null;
+	fileSize: string | null;
+	requirements: string | null;
 	status: (typeof appStatus)[number];
 	featured: boolean;
 	published: boolean;
 	sortOrder: number;
 	privacyContactEmail: string | null;
 	privacyIntro: string | null;
+	privacyBody: string | null;
 	privacyLastUpdated: Date | null;
+	customPrivacyOnly: boolean;
 	collectsData: boolean;
 	dataUsedForTracking: boolean;
 	dataLinkedToIdentity: boolean;
@@ -85,13 +99,20 @@ const emptyValues: AppFormValues = {
 	supportContactEmail: '',
 	supportIntro: '',
 	supportBody: '',
+	downloadUrl: '',
+	sha256: '',
+	version: '',
+	fileSize: '',
+	requirements: '',
 	status: 'development',
 	featured: false,
 	published: true,
 	sortOrder: '0',
 	privacyContactEmail: '',
 	privacyIntro: '',
+	privacyBody: '',
 	privacyLastUpdated: '',
+	customPrivacyOnly: false,
 	collectsData: false,
 	dataUsedForTracking: false,
 	dataLinkedToIdentity: false,
@@ -189,13 +210,20 @@ export function toFormValues(app: App): AppFormValues {
 		supportContactEmail: app.supportContactEmail ?? '',
 		supportIntro: app.supportIntro ?? '',
 		supportBody: app.supportBody ?? '',
+		downloadUrl: app.downloadUrl ?? '',
+		sha256: app.sha256 ?? '',
+		version: app.version ?? '',
+		fileSize: app.fileSize ?? '',
+		requirements: app.requirements ?? '',
 		status: app.status,
 		featured: app.featured,
 		published: app.published,
 		sortOrder: String(app.sortOrder),
 		privacyContactEmail: app.privacyContactEmail ?? '',
 		privacyIntro: app.privacyIntro ?? '',
+		privacyBody: app.privacyBody ?? '',
 		privacyLastUpdated: toDateInput(app.privacyLastUpdated),
+		customPrivacyOnly: app.customPrivacyOnly,
 		collectsData: app.collectsData,
 		dataUsedForTracking: app.dataUsedForTracking,
 		dataLinkedToIdentity: app.dataLinkedToIdentity,
@@ -234,13 +262,20 @@ export async function parseAppForm(
 		supportContactEmail: str(form, 'supportContactEmail'),
 		supportIntro: str(form, 'supportIntro'),
 		supportBody: str(form, 'supportBody'),
+		downloadUrl: str(form, 'downloadUrl'),
+		sha256: str(form, 'sha256'),
+		version: str(form, 'version'),
+		fileSize: str(form, 'fileSize'),
+		requirements: str(form, 'requirements'),
 		status: str(form, 'status') || 'development',
 		featured: checked(form, 'featured'),
 		published: checked(form, 'published'),
 		sortOrder: str(form, 'sortOrder') || '0',
 		privacyContactEmail: str(form, 'privacyContactEmail'),
 		privacyIntro: str(form, 'privacyIntro'),
+		privacyBody: String(form.get('privacyBody') ?? '').trim(),
 		privacyLastUpdated: str(form, 'privacyLastUpdated'),
+		customPrivacyOnly: checked(form, 'customPrivacyOnly'),
 		collectsData: checked(form, 'collectsData'),
 		dataUsedForTracking: checked(form, 'dataUsedForTracking'),
 		dataLinkedToIdentity: checked(form, 'dataLinkedToIdentity'),
@@ -315,13 +350,20 @@ export async function parseAppForm(
 		supportContactEmail: nullIfEmpty(values.supportContactEmail),
 		supportIntro: nullIfEmpty(values.supportIntro),
 		supportBody: nullIfEmpty(values.supportBody),
+		downloadUrl: nullIfEmpty(values.downloadUrl),
+		sha256: nullIfEmpty(values.sha256),
+		version: nullIfEmpty(values.version),
+		fileSize: nullIfEmpty(values.fileSize),
+		requirements: nullIfEmpty(values.requirements),
 		status: values.status,
 		featured: values.featured,
 		published: values.published,
 		sortOrder,
 		privacyContactEmail: nullIfEmpty(values.privacyContactEmail),
 		privacyIntro: nullIfEmpty(values.privacyIntro),
+		privacyBody: nullIfEmpty(values.privacyBody),
 		privacyLastUpdated,
+		customPrivacyOnly: values.customPrivacyOnly,
 		collectsData: values.collectsData,
 		dataUsedForTracking: values.dataUsedForTracking,
 		dataLinkedToIdentity: values.dataLinkedToIdentity,

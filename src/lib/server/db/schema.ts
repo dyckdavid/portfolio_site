@@ -1,5 +1,6 @@
 import {
 	boolean,
+	date,
 	integer,
 	jsonb,
 	pgSchema,
@@ -63,19 +64,38 @@ export const apps = portfolio.table('apps', {
 	supportContactEmail: text('support_contact_email'),
 	supportIntro: text('support_intro'),
 	supportBody: text('support_body'),
+	downloadUrl: text('download_url'),
+	sha256: text('sha256'),
+	version: text('version'),
+	fileSize: text('file_size'),
+	requirements: text('requirements'),
 	status: text('status').notNull().default('development'),
 	featured: boolean('featured').notNull().default(false),
 	published: boolean('published').notNull().default(true),
 	sortOrder: integer('sort_order').notNull().default(0),
 	privacyContactEmail: text('privacy_contact_email'),
 	privacyIntro: text('privacy_intro'),
+	privacyBody: text('privacy_body'),
 	privacyLastUpdated: timestamp('privacy_last_updated', { withTimezone: true }),
+	customPrivacyOnly: boolean('custom_privacy_only').notNull().default(false),
 	collectsData: boolean('collects_data').notNull().default(false),
 	dataUsedForTracking: boolean('data_used_for_tracking').notNull().default(false),
 	dataLinkedToIdentity: boolean('data_linked_to_identity').notNull().default(false),
 	dataTypes: jsonb('data_types').$type<DataTypeEntry[]>().notNull().default([]),
 	thirdParties: text('third_parties'),
 	childrenPolicy: text('children_policy'),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+});
+
+export const releaseNotes = portfolio.table('release_notes', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	appId: uuid('app_id')
+		.notNull()
+		.references(() => apps.id, { onDelete: 'cascade' }),
+	version: text('version').notNull(),
+	releaseDate: date('release_date').notNull(),
+	notes: text('notes').notNull().default(''),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
 });
@@ -93,4 +113,6 @@ export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 export type App = typeof apps.$inferSelect;
 export type NewApp = typeof apps.$inferInsert;
+export type ReleaseNote = typeof releaseNotes.$inferSelect;
+export type NewReleaseNote = typeof releaseNotes.$inferInsert;
 export type Message = typeof messages.$inferSelect;

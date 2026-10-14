@@ -162,6 +162,13 @@ type AppRaw = Omit<
 	| 'collectsData'
 	| 'dataUsedForTracking'
 	| 'dataLinkedToIdentity'
+	| 'customPrivacyOnly'
+	| 'downloadUrl'
+	| 'sha256'
+	| 'version'
+	| 'fileSize'
+	| 'requirements'
+	| 'privacyBody'
 > & {
 	featured: boolean;
 	published: boolean;
@@ -245,6 +252,11 @@ Fill an App Store listing, support page, and privacy page. Write privacyIntro as
 		supportContactEmail: raw.supportContactEmail.trim(),
 		supportIntro: raw.supportIntro.trim(),
 		supportBody: raw.supportBody.trim(),
+		downloadUrl: '',
+		sha256: '',
+		version: '',
+		fileSize: '',
+		requirements: '',
 		status: appStatus.includes(raw.status as (typeof appStatus)[number])
 			? raw.status
 			: 'development',
@@ -253,9 +265,11 @@ Fill an App Store listing, support page, and privacy page. Write privacyIntro as
 		sortOrder: String(Number.isFinite(raw.sortOrder) ? raw.sortOrder : 0),
 		privacyContactEmail: raw.privacyContactEmail.trim(),
 		privacyIntro: raw.privacyIntro.trim(),
+		privacyBody: '',
 		privacyLastUpdated: /^\d{4}-\d{2}-\d{2}$/.test(raw.privacyLastUpdated)
 			? raw.privacyLastUpdated
 			: today,
+		customPrivacyOnly: false,
 		collectsData: collects,
 		dataUsedForTracking: Boolean(raw.dataUsedForTracking),
 		dataLinkedToIdentity: Boolean(raw.dataLinkedToIdentity),
